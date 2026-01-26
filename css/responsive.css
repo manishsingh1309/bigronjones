@@ -1,0 +1,415 @@
+/* Responsive Styles */
+
+/* Mobile: < 768px (default - mobile-first) */
+
+/* Tablet: 768px and up */
+@media (min-width: 768px) {
+  .hero-ctas {
+    flex-wrap: nowrap;
+  }
+  
+  .about-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .method-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .programs-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .transformations-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .testimonials-slider {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .instagram-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .contact-wrapper {
+    grid-template-columns: 1fr 1.2fr;
+  }
+  
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+  
+  .footer-legal {
+    flex-direction: row;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* Desktop: 1024px and up */
+@media (min-width: 1024px) {
+  /* Show desktop navigation */
+  .nav-menu {
+    position: static;
+    width: auto;
+    height: auto;
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    transform: none;
+  }
+  
+  .hamburger {
+    display: none;
+  }
+  
+  /* Hero adjustments */
+  .hero-title .line {
+    display: inline;
+    margin-right: 0.2em;
+  }
+  
+  /* Features grid 3 columns */
+  .features-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Method grid 3 columns */
+  .method-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Programs grid 3 columns */
+  .programs-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Training options grid */
+  .options-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Transformations grid 3 columns */
+  .transformations-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Testimonials grid 3 columns */
+  .testimonials-slider {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  /* Instagram 6 columns */
+  .instagram-grid {
+    grid-template-columns: repeat(6, 1fr);
+  }
+  
+  /* About section */
+  #about-canvas {
+    right: -50px;
+    width: 400px;
+    height: 400px;
+  }
+}
+
+/* Large Desktop: 1280px and up */
+@media (min-width: 1280px) {
+  .container {
+    padding: 0 2rem;
+  }
+  
+  .about-grid {
+    gap: var(--spacing-3xl) 4rem;
+  }
+}
+
+/* Mobile-only styles (max-width: 767px) */
+@media (max-width: 767px) {
+  /* Mobile navigation */
+  .nav-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 80%;
+    max-width: 300px;
+    height: 100vh;
+    background: var(--color-dark);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 5rem 2rem 2rem;
+    gap: var(--spacing-lg);
+    transition: right var(--transition-base);
+    z-index: var(--z-nav);
+    overflow-y: auto;
+  }
+  
+  .nav-menu.active {
+    right: 0;
+  }
+  
+  .nav-link {
+    width: 100%;
+    padding: var(--spacing-sm) 0;
+    font-size: 1.125rem;
+  }
+  
+  .nav-link::after {
+    display: none;
+  }
+  
+  .btn-nav {
+    width: 100%;
+    justify-content: center;
+    margin-top: var(--spacing-md);
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+  
+  /* Hero adjustments */
+  .hero {
+    min-height: 100svh; /* Use svh for mobile browsers */
+  }
+  
+  .hero-ctas {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .hero-ctas .btn {
+    width: 100%;
+  }
+  
+  .hero-trust {
+    font-size: 0.75rem;
+  }
+  
+  /* Section padding adjustments */
+  .social-proof,
+  .about,
+  .why-choose,
+  .method,
+  .programs,
+  .transformations,
+  .testimonials,
+  .process,
+  .faq,
+  .instagram,
+  .contact {
+    padding: 3rem 1rem;
+  }
+  
+  /* About section */
+  .about-grid {
+    gap: var(--spacing-xl);
+  }
+  
+  #about-canvas {
+    display: none; /* Hide 3D canvas on mobile for performance */
+  }
+  
+  .image-accent {
+    width: 150px;
+    height: 150px;
+    top: -10px;
+    right: -10px;
+  }
+  
+  /* Process timeline */
+  .process-timeline::before {
+    left: 20px;
+  }
+  
+  .step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+  }
+  
+  .process-step {
+    gap: var(--spacing-md);
+  }
+  
+  /* FAQ */
+  .faq-question {
+    font-size: var(--fs-body);
+    padding: var(--spacing-md);
+  }
+  
+  /* Footer */
+  .footer {
+    padding: var(--spacing-xl) 0 var(--spacing-md);
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+}
+
+/* Small mobile: max-width 480px */
+@media (max-width: 480px) {
+  .proof-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .features-grid,
+  .method-grid,
+  .programs-grid,
+  .options-grid,
+  .transformations-grid,
+  .testimonials-slider {
+    grid-template-columns: 1fr;
+  }
+  
+  .instagram-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .hero-trust {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+  
+  .hero-trust .divider {
+    display: none;
+  }
+  
+  .guarantee-badges {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
+  .program-guarantee {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Hover effects only on devices that support hover */
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover,
+  .feature-card:hover,
+  .method-card:hover,
+  .program-card:hover,
+  .transformation-card:hover,
+  .instagram-post:hover,
+  .footer-social a:hover {
+    /* Hover effects already defined in main.css */
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .scroll-indicator .arrow {
+    animation: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .btn-primary {
+    border: 2px solid var(--color-white);
+  }
+  
+  .btn-secondary {
+    border-width: 3px;
+  }
+  
+  .feature-card,
+  .method-card,
+  .program-card {
+    border: 2px solid var(--color-dark);
+  }
+}
+
+/* Dark mode support (if OS prefers dark) */
+@media (prefers-color-scheme: dark) {
+  /* Already using dark theme as primary, but could adjust if needed */
+}
+
+/* Print styles */
+@media print {
+  .navbar,
+  .hamburger,
+  .hero-ctas,
+  .scroll-indicator,
+  .footer-social,
+  .instagram-grid,
+  #hero-canvas,
+  #about-canvas {
+    display: none;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .hero,
+  .why-choose,
+  .process,
+  .contact {
+    background: white;
+    color: black;
+  }
+  
+  .section-title,
+  .hero-title {
+    color: black;
+  }
+  
+  a {
+    text-decoration: underline;
+  }
+}
+
+/* Landscape mobile orientation */
+@media (max-width: 767px) and (orientation: landscape) {
+  .hero {
+    min-height: auto;
+    padding-top: 6rem;
+    padding-bottom: 3rem;
+  }
+  
+  .scroll-indicator {
+    display: none;
+  }
+}
+
+/* Touch-friendly adjustments */
+@media (pointer: coarse) {
+  /* Ensure all interactive elements are at least 44x44px */
+  .btn,
+  .nav-link,
+  .faq-question,
+  .hamburger {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Increase padding for better touch targets */
+  .nav-link {
+    padding: var(--spacing-md) var(--spacing-sm);
+  }
+}
+
+/* High resolution displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Could serve higher resolution images here */
+}

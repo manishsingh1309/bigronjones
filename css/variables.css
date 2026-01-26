@@ -1,0 +1,105 @@
+/* CSS Custom Properties */
+:root {
+  /* Primary Colors */
+  --color-dark: #0A0E27;
+  --color-primary: #FF4D00;
+  --color-white: #FFFFFF;
+  
+  /* Accent Colors */
+  --color-gray-900: #1A1D2E;
+  --color-gray-700: #4A5568;
+  --color-gray-500: #718096;
+  --color-gray-300: #CBD5E0;
+  --color-gray-100: #F7FAFC;
+  --color-success: #10B981;
+  --color-accent: #00D9FF;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FF4D00 0%, #FF8A00 100%);
+  --gradient-dark: linear-gradient(180deg, #0A0E27 0%, #1A1D2E 100%);
+  --gradient-hero: radial-gradient(circle at 30% 50%, rgba(255, 77, 0, 0.15) 0%, transparent 50%);
+  
+  /* Typography */
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-heading: 'Montserrat', sans-serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  
+  /* Font Sizes */
+  --fs-hero: clamp(2.5rem, 5vw + 1rem, 4.5rem);
+  --fs-h1: clamp(2.5rem, 4vw + 1rem, 3.5rem);
+  --fs-h2: clamp(2rem, 3vw + 1rem, 3rem);
+  --fs-h3: clamp(1.5rem, 2vw + 0.5rem, 2rem);
+  --fs-body-lg: clamp(1.125rem, 1vw + 0.5rem, 1.25rem);
+  --fs-body: clamp(1rem, 0.5vw + 0.875rem, 1.125rem);
+  --fs-small: 0.875rem;
+  
+  /* Spacing */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  --spacing-3xl: 6rem;
+  
+  /* Layout */
+  --container-width: 100%;
+  --container-max: 1400px;
+  --section-padding: 4rem 1.5rem;
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-base: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  
+  /* Shadows */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+  --shadow-primary: 0 10px 30px rgba(255, 77, 0, 0.3);
+  --shadow-primary-lg: 0 15px 40px rgba(255, 77, 0, 0.4);
+  
+  /* Border Radius */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-full: 50px;
+  
+  /* Z-index */
+  --z-loader: 10000;
+  --z-nav: 1000;
+  --z-modal: 9000;
+  --z-dropdown: 100;
+}
+
+/* Tablet breakpoint adjustments */
+@media (min-width: 768px) {
+  :root {
+    --container-width: 720px;
+    --section-padding: 5rem 2rem;
+  }
+}
+
+/* Desktop breakpoint adjustments */
+@media (min-width: 1024px) {
+  :root {
+    --container-width: 960px;
+    --section-padding: 6rem 2rem;
+  }
+}
+
+/* Large desktop breakpoint adjustments */
+@media (min-width: 1280px) {
+  :root {
+    --container-width: 1200px;
+    --section-padding: 8rem 2rem;
+  }
+}
+
+/* Extra large breakpoint adjustments */
+@media (min-width: 1536px) {
+  :root {
+    --container-width: 1400px;
+  }
+}

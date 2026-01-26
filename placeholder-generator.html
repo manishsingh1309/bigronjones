@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placeholder Image Generator - Big Ron Jones</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: #f5f5f5;
+    }
+    
+    h1 {
+      color: #0A0E27;
+      margin-bottom: 0.5rem;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    
+    .note {
+      background: #fff3cd;
+      border-left: 4px solid #FF4D00;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 4px;
+    }
+    
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .card h3 {
+      color: #0A0E27;
+      margin-top: 0;
+      margin-bottom: 0.5rem;
+    }
+    
+    .card p {
+      color: #666;
+      font-size: 0.9rem;
+      margin: 0.5rem 0;
+    }
+    
+    .placeholder {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, #FF4D00 0%, #FF8A00 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      text-align: center;
+      margin: 1rem 0;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    .placeholder:hover {
+      transform: scale(1.02);
+    }
+    
+    .placeholder.square {
+      aspect-ratio: 1;
+    }
+    
+    .placeholder.portrait {
+      aspect-ratio: 3/4;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #FF4D00;
+      color: white;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-top: 0.5rem;
+      transition: background 0.2s;
+    }
+    
+    .btn:hover {
+      background: #FF6A00;
+    }
+    
+    .instructions {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
+    
+    .instructions h2 {
+      color: #0A0E27;
+      margin-top: 0;
+    }
+    
+    .instructions ol {
+      line-height: 1.8;
+    }
+    
+    .instructions code {
+      background: #f5f5f5;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎨 Image Placeholder Generator</h1>
+  <p class="subtitle">Create placeholder images for the Big Ron Jones website</p>
+  
+  <div class="note">
+    <strong>📝 Note:</strong> These are temporary placeholders. Replace with actual professional photos of Ron Jones, client transformations, and Instagram content for the live website.
+  </div>
+  
+  <div class="instructions">
+    <h2>How to Add Real Images</h2>
+    <ol>
+      <li>Take or obtain high-quality photos (at least 1920px wide)</li>
+      <li>Optimize images using tools like:
+        <ul>
+          <li><strong>TinyPNG</strong> - https://tinypng.com (easy compression)</li>
+          <li><strong>Squoosh</strong> - https://squoosh.app (WebP conversion)</li>
+          <li><strong>ImageOptim</strong> - Mac app for batch optimization</li>
+        </ul>
+      </li>
+      <li>Convert to WebP format for better performance</li>
+      <li>Save files with the exact names shown below to <code>assets/images/</code></li>
+      <li>Aim for file sizes under 200KB per image</li>
+    </ol>
+  </div>
+  
+  <h2>Required Images</h2>
+  
+  <div class="grid">
+    <div class="card">
+      <h3>Ron Portrait</h3>
+      <p>Professional photo of Big Ron Jones</p>
+      <p><strong>File:</strong> ron-portrait.jpg</p>
+      <p><strong>Size:</strong> 800x1000px (Portrait)</p>
+      <div class="placeholder portrait" onclick="downloadPlaceholder(this, 'ron-portrait.jpg', 800, 1000)">
+        Click to Download<br>Placeholder
+      </div>
+      <p style="font-size: 0.85rem; color: #999;">Use: About section</p>
+    </div>
+    
+    <div class="card">
+      <h3>Transformation #1</h3>
+      <p>Client before/after or success photo</p>
+      <p><strong>File:</strong> transformation-1.jpg</p>
+      <p><strong>Size:</strong> 800x600px</p>
+      <div class="placeholder" onclick="downloadPlaceholder(this, 'transformation-1.jpg', 800, 600)">
+        Click to Download<br>Placeholder
+      </div>
+      <p style="font-size: 0.85rem; color: #999;">Use: Transformations section</p>
+    </div>
+    
+    <div class="card">
+      <h3>Transformation #2</h3>
+      <p>Client before/after or success photo</p>
+      <p><strong>File:</strong> transformation-2.jpg</p>
+      <p><strong>Size:</strong> 800x600px</p>
+      <div class="placeholder" onclick="downloadPlaceholder(this, 'transformation-2.jpg', 800, 600)">
+        Click to Download<br>Placeholder
+      </div>
+      <p style="font-size: 0.85rem; color: #999;">Use: Transformations section</p>
+    </div>
+    
+    <div class="card">
+      <h3>Transformation #3</h3>
+      <p>Client before/after or success photo</p>
+      <p><strong>File:</strong> transformation-3.jpg</p>
+      <p><strong>Size:</strong> 800x600px</p>
+      <div class="placeholder" onclick="downloadPlaceholder(this, 'transformation-3.jpg', 800, 600)">
+        Click to Download<br>Placeholder
+      </div>
+      <p style="font-size: 0.85rem; color: #999;">Use: Transformations section</p>
+    </div>
+  </div>
+  
+  <h2>Instagram Feed Images</h2>
+  <p style="color: #666; margin-bottom: 1rem;">Download recent posts from @bigronjones Instagram or use workout/training photos</p>
+  
+  <div class="grid">
+    <div class="card">
+      <h3>Instagram #1</h3>
+      <p><strong>File:</strong> ig-1.jpg</p>
+      <div class="placeholder square" onclick="downloadPlaceholder(this, 'ig-1.jpg', 600, 600)">
+        Click to Download<br>Placeholder
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Instagram #2</h3>
+      <p><strong>File:</strong> ig-2.jpg</p>
+      <div class="placeholder square" onclick="downloadPlaceholder(this, 'ig-2.jpg', 600, 600)">
+        Click to Download<br>Placeholder
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Instagram #3</h3>
+      <p><strong>File:</strong> ig-3.jpg</p>
+      <div class="placeholder square" onclick="downloadPlaceholder(this, 'ig-3.jpg', 600, 600)">
+        Click to Download<br>Placeholder
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Instagram #4</h3>
+      <p><strong>File:</strong> ig-4.jpg</p>
+      <div class="placeholder square" onclick="downloadPlaceholder(this, 'ig-4.jpg', 600, 600)">
+        Click to Download<br>Placeholder
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Instagram #5</h3>
+      <p><strong>File:</strong> ig-5.jpg</p>
+      <div class="placeholder square" onclick="downloadPlaceholder(this, 'ig-5.jpg', 600, 600)">
+        Click to Download<br>Placeholder
+      </div>
+    </div>
+    
+    <div class="card">
+      <h3>Instagram #6</h3>
+      <p><strong>File:</strong> ig-6.jpg</p>
+      <div class="placeholder square" onclick="downloadPlaceholder(this, 'ig-6.jpg', 600, 600)">
+        Click to Download<br>Placeholder
+      </div>
+    </div>
+  </div>
+  
+  <div class="instructions">
+    <h2>Alternative: Use Unsplash for Temporary Placeholders</h2>
+    <p>While gathering real photos, you can use free stock photos from Unsplash:</p>
+    <ul>
+      <li><a href="https://unsplash.com/s/photos/fitness-trainer" target="_blank">Fitness Trainer Photos</a></li>
+      <li><a href="https://unsplash.com/s/photos/gym-workout" target="_blank">Gym Workout Photos</a></li>
+      <li><a href="https://unsplash.com/s/photos/fitness-transformation" target="_blank">Fitness Transformation</a></li>
+    </ul>
+    <p><strong>Remember:</strong> Professional, authentic photos of Big Ron and real clients will perform much better for conversions!</p>
+  </div>
+  
+  <script>
+    function downloadPlaceholder(element, filename, width, height) {
+      // Create canvas
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      
+      // Gradient background
+      const gradient = ctx.createLinearGradient(0, 0, width, height);
+      gradient.addColorStop(0, '#FF4D00');
+      gradient.addColorStop(1, '#FF8A00');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, width, height);
+      
+      // Add text
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 40px Arial';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(filename, width/2, height/2 - 30);
+      
+      ctx.font = '24px Arial';
+      ctx.fillText(`${width} × ${height}`, width/2, height/2 + 20);
+      
+      // Add watermark
+      ctx.font = '18px Arial';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+      ctx.fillText('PLACEHOLDER - Replace with real image', width/2, height - 40);
+      
+      // Download
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      });
+      
+      // Visual feedback
+      element.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        element.style.transform = 'scale(1)';
+      }, 200);
+    }
+  </script>
+</body>
+</html>
