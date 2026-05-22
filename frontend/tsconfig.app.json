@@ -1,0 +1,40 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "strict": true,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@admin/*": ["../admin/frontend/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/hooks/*": ["./src/hooks/*"],
+      "@/pages/*": ["./src/pages/*"],
+      "@/lib/*": ["../shared/lib/*"],
+      "@/data/*": ["../shared/data/*"],
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": [
+    "src",
+    "../shared/lib",
+    "../shared/data",
+    "../admin/frontend",
+    "src/vite-env.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", ".next", "app", "api", "scripts"]
+}

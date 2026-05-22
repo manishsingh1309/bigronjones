@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /checkout
+Disallow: /checkout/success
+
+Sitemap: https://bigronjones.com/sitemap.xml
+Host: https://bigronjones.com

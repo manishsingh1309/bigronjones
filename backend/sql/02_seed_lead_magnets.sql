@@ -1,0 +1,14 @@
+-- Lead-magnet seed file — intentionally empty.
+--
+-- The original seed inserted three PDF magnets whose pdf_url pointed at
+-- /assets/pdfs/<file>.pdf, but those PDFs were never shipped — so any submit
+-- emailed a 404 link. Seeing as the admin UI at /admin/content/new now lets
+-- Ron paste any Google Drive / Dropbox / Notion / YouTube link and gets a
+-- unique /free/<slug> URL back in one step, hard-coded seed magnets are no
+-- longer needed.
+--
+-- If you want example data for a fresh dev install, create magnets via the
+-- admin UI after signing in with an email listed in ADMIN_EMAILS.
+--
+-- If you have an EXISTING Supabase that still has the old broken seed rows,
+-- run 09_fix_broken_seed_magnets.sql once to deactivate them.

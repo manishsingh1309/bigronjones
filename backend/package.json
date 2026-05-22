@@ -1,0 +1,23 @@
+{
+  "name": "bigronjones-backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx dev-server.ts",
+    "start": "tsx dev-server.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.21.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.79.0",
+    "@google/generative-ai": "^0.24.1",
+    "@stripe/stripe-js": "^9.3.1",
+    "@supabase/supabase-js": "^2.104.1",
+    "isomorphic-dompurify": "^3.10.0",
+    "nodemailer": "^8.0.7",
+    "resend": "^6.12.2",
+    "stripe": "^22.1.0"
+  }
+}

@@ -1,0 +1,113 @@
+# Render Blueprint — defines all Render services for this project.
+# To deploy: Render Dashboard → New + → Blueprint → connect this repo.
+#
+# After the services exist:
+#   1. Open each service → "Environment" → fill in the keys marked
+#      `sync: false` below (they are not stored in git for security).
+#   2. Copy the web service URL (e.g. https://bigronjones-api.onrender.com)
+#      into:
+#        - vercel.json   (rewrites[0].destination)
+#        - the cron job's startCommand below (replace REPLACE-ME-RENDER-URL)
+#      then redeploy this blueprint.
+#
+# Free tier note: the web service sleeps after ~15 min idle. First request
+# after sleep takes 30–60s. Stripe/Calendly webhooks may time out during
+# wake-up — they retry, but consider upgrading to Starter ($7/mo) before
+# going live.
+
+services:
+  # ────────────────────────────────────────────────────────────────────────
+  # Web service — Node HTTP server (backend/server.ts)
+  # ────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: bigronjones-api
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: .
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+
+      # The exact Vercel origin allowed by CORS. Update after the Vercel
+      # project URL is known (e.g. https://bigronjones.vercel.app or your
+      # custom domain). Use "*" only temporarily during smoke-testing.
+      - key: FRONTEND_ORIGIN
+        sync: false
+
+      # User-facing site URL — used by Stripe success/cancel redirects,
+      # email links, OAuth callbacks. Should be the Vercel/custom domain.
+      - key: SITE_URL
+        sync: false
+      - key: VITE_SITE_URL
+        sync: false
+
+      # Supabase (service role — server-side only, never expose to browser)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+
+      # Stripe
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_CHECKOUT_LINK
+        sync: false
+
+      # Email (Resend)
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: RESEND_AUDIENCE_ID
+        sync: false
+      - key: CONTACT_INBOX_EMAIL
+        sync: false
+
+      # Calendly
+      - key: CALENDLY_WEBHOOK_SECRET
+        sync: false
+
+      # AI providers (used by /api/generate-blogs etc.)
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # Shared secret for cron-protected endpoints
+      # Generate once: openssl rand -hex 32
+      - key: CRON_SECRET
+        sync: false
+
+  # ────────────────────────────────────────────────────────────────────────
+  # Cron — daily 7-day trial email scheduler
+  # Replaces the old Vercel cron (path /api/cron/email-scheduler @ 06:00 UTC).
+  # Note: Render cron jobs run on the Starter plan or above ($1+/mo) —
+  # there is no free cron tier.
+  # ────────────────────────────────────────────────────────────────────────
+  - type: cron
+    name: bigronjones-email-scheduler
+    runtime: node
+    plan: starter
+    region: oregon
+    branch: main
+    schedule: "0 6 * * *"
+    # The "build" is a no-op — we only need curl, which the Render base
+    # image already provides.
+    buildCommand: "echo no-op"
+    # Hits the email-scheduler endpoint on the web service above. The
+    # handler requires ?secret=<CRON_SECRET>. After the web service URL is
+    # known, replace REPLACE-ME-RENDER-URL below with it.
+    startCommand: |
+      curl --fail --silent --show-error \
+        "https://REPLACE-ME-RENDER-URL.onrender.com/api/cron/email-scheduler?secret=$CRON_SECRET"
+    envVars:
+      # Same value as the web service's CRON_SECRET — must match.
+      - key: CRON_SECRET
+        sync: false

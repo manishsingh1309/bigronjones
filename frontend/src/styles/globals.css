@@ -1,0 +1,205 @@
+@import "tailwindcss";
+
+/*
+ * Brand wordmark font.
+ * Drop the licensed file at /public/fonts/TTBluescreen-ExtraBold.woff2,
+ * uncomment the block below, and the navbar wordmark picks it up automatically.
+ * Until then the font stack falls back to Barlow Condensed 800 — closest free analogue.
+ */
+/*
+@font-face {
+  font-family: "TT Bluescreens";
+  src: url("/fonts/TTBluescreen-ExtraBold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+*/
+
+@theme inline {
+  --color-void: #050505;
+  --color-surface: #0f0f0f;
+  --color-border: #1a1a1a;
+  --color-crimson: #e8192c;
+  --color-crimson-dark: #b50f1f;
+
+  /* Brand palette used across blog / newsletter / shared cards */
+  --color-brand-red: #e8192c;
+  --color-brand-red-light: #ff3548;
+  --color-brand-red-dark: #b50f1f;
+  --color-brand-blue: #2563eb;
+  --color-brand-blue-light: #60a5fa;
+  --color-brand-blue-dark: #1e40af;
+  --color-brand-black: #050505;
+  --color-brand-gray: #6b7280;
+  --color-brand-gray-light: #9ca3af;
+  --color-brand-gray-dark: #374151;
+
+  --font-display: "Bebas Neue", sans-serif;
+  --font-heading: "Bebas Neue", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+  --font-mono: "DM Mono", monospace;
+}
+
+:root {
+  --crimson: #e8192c;
+  --crimson-dark: #b50f1f;
+  --crimson-glow: rgba(232, 25, 44, 0.12);
+  --void: #050505;
+  --surface: #0f0f0f;
+  --border: #1a1a1a;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Native cursor is always shown. The CustomCursor visual still renders on
+   top via mix-blend-difference for marketing pages, but the native pointer
+   is never hidden — otherwise interactive elements with darker backgrounds
+   (admin sidebar items, modals, etc.) make the cursor effectively invisible
+   because the blend-difference math collapses near the same hue. */
+
+/* Touch devices: hide the decorative custom cursor element entirely */
+@media (hover: none) and (pointer: coarse) {
+  .custom-cursor {
+    display: none !important;
+  }
+}
+
+body {
+  background: #050505;
+  color: #ffffff;
+  font-family: "DM Sans", system-ui, sans-serif;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #e8192c;
+  color: #ffffff;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #e8192c;
+}
+
+/* Hero opener — frame Ron clearly across breakpoints.
+   The SVG is 16:9 with Ron sitting on the right third. On wide screens
+   bg-cover crops the sides, so we anchor toward the right to pull him
+   inward instead of letting him fall off the corner. */
+.hero-opener-bg {
+  background-position: 70% center;
+}
+@media (min-width: 1280px) {
+  .hero-opener-bg {
+    background-position: 65% center;
+  }
+}
+@media (min-width: 1600px) {
+  .hero-opener-bg {
+    background-position: 62% center;
+  }
+}
+@media (max-width: 768px) {
+  .hero-opener-bg {
+    background-position: 30% top;
+  }
+}
+
+/* Film grain overlay */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+}
+
+/* Aceternity-style spotlight keyframes */
+@keyframes spotlight {
+  0% {
+    opacity: 0;
+    transform: translate(-72%, -62%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -40%) scale(1);
+  }
+}
+.animate-spotlight {
+  animation: spotlight 2s ease 0.75s 1 forwards;
+}
+
+/* Marquee pause-on-hover helper */
+.marquee-track {
+  animation: marquee 22s linear infinite;
+}
+.marquee-pause:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Infinite vertical columns for testimonials */
+.tcol-up {
+  animation: tcol-up 28s linear infinite;
+}
+.tcol-down {
+  animation: tcol-down 34s linear infinite;
+}
+.tcol-pause:hover .tcol-up,
+.tcol-pause:hover .tcol-down {
+  animation-play-state: paused;
+}
+@keyframes tcol-up {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-50%); }
+}
+@keyframes tcol-down {
+  0% { transform: translateY(-50%); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(232, 25, 44, 0.45); }
+  50% { opacity: 0.85; box-shadow: 0 0 0 6px rgba(232, 25, 44, 0); }
+}
+.live-dot {
+  animation: live-pulse 2s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #0f0f0f 25%, #1a1a1a 50%, #0f0f0f 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
