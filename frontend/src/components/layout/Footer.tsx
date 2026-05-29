@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Instagram, Youtube, Music2, Facebook, Mail } from "lucide-react";
 import { siteData } from "@/data/site";
 import BrandName from "@/components/shared/BrandName";
+import { track } from "@/lib/track";
 
 const ICONS = { Instagram, Youtube, Music2, Facebook } as const;
 type IconName = keyof typeof ICONS;
@@ -35,7 +36,8 @@ const sitemap: { heading: string; links: { label: string; href: string }[] }[] =
       links: [
         { label: "About Ron", href: "/about" },
         { label: "Meet the Team", href: "/team" },
-        { label: "Testimonials", href: "/testimonials" },
+        { label: "Success Stories", href: "/testimonials" },
+        { label: "Apply", href: "/apply" },
         { label: "Blog", href: "/blog" },
         { label: "Contact", href: "/contact" },
       ],
@@ -77,7 +79,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="relative overflow-hidden border-t border-[#E8192C] bg-[#050505] pt-20 pb-10">
+    <footer className="relative overflow-hidden border-t border-[#E8192C] bg-[#050505] pt-20 pb-24 lg:pb-10">
       <span
         aria-hidden
         className="pointer-events-none absolute bottom-2 left-0 right-0 select-none whitespace-nowrap text-center font-['Bebas_Neue'] leading-none text-white/[0.025]"
@@ -90,8 +92,25 @@ export default function Footer() {
       </span>
 
       <div className="relative z-[2] mx-auto max-w-[1400px] px-6 md:px-10">
+        {/* Footer CTA — "Ready To Begin?" */}
+        <div className="flex flex-col items-start justify-between gap-6 border-b border-[#1a1a1a] pb-10 sm:flex-row sm:items-center">
+          <h2
+            className="font-['Bebas_Neue'] leading-[0.95] text-white"
+            style={{ fontSize: "clamp(2.25rem, 5vw, 3.5rem)" }}
+          >
+            Ready To Begin?
+          </h2>
+          <Link
+            to="/programs/trial"
+            onClick={() => track("cta_click", { event_label: "footer_cta", cta: "START NOW" })}
+            className="inline-flex items-center bg-[#E8192C] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f]"
+          >
+            START NOW
+          </Link>
+        </div>
+
         {/* Top: brand + tagline + socials */}
-        <div className="flex flex-col items-start justify-between gap-8 border-b border-[#1a1a1a] pb-10 md:flex-row md:items-center">
+        <div className="mt-10 flex flex-col items-start justify-between gap-8 border-b border-[#1a1a1a] pb-10 md:flex-row md:items-center">
           <div className="flex flex-col gap-3">
             <Link to="/" className="inline-flex items-center">
               <span
@@ -109,7 +128,10 @@ export default function Footer() {
               </span>
             </Link>
             <p className="font-['DM_Sans'] text-sm italic text-white/60">
-              Practical Advice For Your Real World Goals.
+              Practical Advice For Your Real World Goals
+              <sup style={{ fontSize: "0.6em", verticalAlign: "super", lineHeight: 0 }}>
+                ®
+              </sup>
             </p>
             <a
               href={`mailto:${siteData.contact.email}`}

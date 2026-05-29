@@ -70,7 +70,7 @@ export default function ConsultSection() {
                 className="rounded-xl border border-white/10 bg-white/5 p-4"
               >
                 <div className="relative mb-3 h-32 overflow-hidden rounded-lg">
-                  <img src={c.image} alt={c.name} className="object-cover object-top" />
+                  <img src={c.image} alt={c.name} loading="lazy" decoding="async" className="object-cover object-top" />
                 </div>
                 <h3 className="font-heading text-lg tracking-wider text-white">
                   {c.title}
@@ -111,7 +111,7 @@ export default function ConsultSection() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="relative hidden md:block"
         >
-          <img src="/images/ron/gym-standing.jpg" alt="Training session" className="object-cover" />
+          <img src="/images/ron/gym-standing.jpg" alt="Training session" loading="lazy" decoding="async" className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-brand-black via-transparent to-transparent" />
         </motion.div>
       </div>

@@ -3,6 +3,7 @@ import { useRef } from "react";
 
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
+import BrandName from "@/components/shared/BrandName";
 
 export default function SplineSection() {
   const ref = useRef<HTMLElement>(null);
@@ -35,43 +36,41 @@ export default function SplineSection() {
             animate={inView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
-            — BUILT FOR ADULTS READY FOR STRUCTURE
+            — MEET YOUR COACH
           </motion.p>
 
           <div>
-            {["THE STRUCTURE", "THAT FINALLY", "WORKS"].map((line, i) => (
-              <div key={line} className="overflow-hidden">
-                <motion.h2
-                  className={`font-['Bebas_Neue'] leading-[0.9] ${
-                    i === 1 ? "text-[#E8192C]" : "text-white"
-                  }`}
-                  style={{ fontSize: "clamp(2.75rem, 7vw, 6.5rem)" }}
-                  initial={{ y: "110%" }}
-                  animate={inView ? { y: 0 } : {}}
-                  transition={{
-                    duration: 0.85,
-                    delay: 0.1 + i * 0.1,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  {line}
-                </motion.h2>
-              </div>
-            ))}
+            <div className="overflow-hidden">
+              <motion.h2
+                className="font-['Bebas_Neue'] leading-[0.9] text-white"
+                style={{ fontSize: "clamp(2.75rem, 7vw, 6.5rem)" }}
+                initial={{ y: "110%" }}
+                animate={inView ? { y: 0 } : {}}
+                transition={{ duration: 0.85, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+              >
+                MEET
+              </motion.h2>
+            </div>
+            <div className="overflow-hidden">
+              <motion.h2
+                className="font-['Bebas_Neue'] leading-[0.9] text-[#E8192C]"
+                style={{ fontSize: "clamp(2.75rem, 7vw, 6.5rem)" }}
+                initial={{ y: "110%" }}
+                animate={inView ? { y: 0 } : {}}
+                transition={{ duration: 0.85, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <BrandName variant="upper" />
+              </motion.h2>
+            </div>
           </div>
 
           <motion.div
-            className="mt-6 mb-8 flex max-w-md flex-col gap-4 font-['DM_Sans'] text-base leading-relaxed text-white/65"
+            className="mt-6 mb-8 flex max-w-md flex-col gap-4 font-['DM_Sans'] text-lg leading-relaxed text-white/65"
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <p>
-              Built around your real life. Backed by weekly accountability. Designed so you stop starting over.
-            </p>
-            <p>
-              No extremes. No confusion. Just a system you can follow and sustain.
-            </p>
+            <p>See why thousands trust our process.</p>
           </motion.div>
 
           <motion.div
@@ -80,10 +79,10 @@ export default function SplineSection() {
             transition={{ duration: 0.6, delay: 0.5 }}
           >
             <Link
-              to="/programs/trial"
+              to="/about"
               className="inline-flex w-fit items-center gap-3 bg-[#E8192C] px-8 py-4 font-['Bebas_Neue'] text-lg tracking-widest text-white transition-colors duration-300 hover:bg-[#b50f1f]"
             >
-              START YOUR 7-DAY TRIAL
+              SEE HOW IT WORKS
               <span aria-hidden>→</span>
             </Link>
           </motion.div>
@@ -97,7 +96,7 @@ export default function SplineSection() {
           transition={{ duration: 1.0, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="absolute inset-0 overflow-hidden">
-            <img src="/assets/ron-hero.jpg" alt="Big Ron Jones coaching" className="object-cover object-center" />
+            <img src="/assets/ron-hero.jpg" alt="Big Ron Jones coaching" loading="lazy" decoding="async" className="object-cover object-center" />
 
             {/* Left edge gradient — blends into dark section */}
             <div

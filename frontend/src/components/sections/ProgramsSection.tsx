@@ -30,14 +30,8 @@ export default function ProgramsSection() {
             className="font-['Bebas_Neue'] leading-[0.92] text-white"
             style={{ fontSize: "clamp(2.75rem, 8vw, 7rem)" }}
           >
-            STRUCTURE FOR REAL LIFE.<br />RESULTS THAT STICK.
+            CHOOSE YOUR<br />STARTING POINT
           </motion.h2>
-          <motion.p
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
-            className="mt-5 max-w-xl font-['DM_Sans'] text-base leading-relaxed text-white/60"
-          >
-            Choose your path and step into a 7-day system built for your life.
-          </motion.p>
         </motion.header>
 
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
@@ -74,6 +68,7 @@ export default function ProgramsSection() {
                     src={p.image}
                     alt={p.title}
                     loading="lazy"
+                    decoding="async"
                     className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.04]"
                   />
                 </motion.div>

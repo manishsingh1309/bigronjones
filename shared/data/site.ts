@@ -22,10 +22,9 @@ export const siteData = {
     tagline: "BUILT FOR REAL LIFE",
     sub: "FITNESS  •  WELLNESS  •  ACCOUNTABILITY",
     lines: [
-      { text: "PRACTICAL ADVICE", color: "white" as const },
+      { text: "PROGRAMS BUILT", color: "white" as const },
       { text: "FOR YOUR", color: "white" as const },
-      { text: "REAL WORLD", color: "crimson" as const },
-      { text: "GOALS.", color: "crimson" as const },
+      { text: "WORLD.", color: "crimson" as const },
     ],
     role: "Personal Fitness Coach & Accountability Partner",
     cta: "Start 7-Day Trial",
@@ -51,12 +50,10 @@ export const siteData = {
   programs: [
     {
       badge: "MEN'S 7-DAY TRIAL",
-      title: "Men's Fitness Alliance — 7 Day Trial",
+      title: "Men's Fitness Alliance™",
       tagline: "STRUCTURE. ACCOUNTABILITY. NO MORE GUESSING.",
       desc: [
-        "Built for men over 35 who are done piecing things together.",
-        "If your training has been inconsistent, your nutrition unclear, and your results up and down, this is where that changes.",
-        "You'll step into a structured system with real accountability, clear direction, and a plan you can actually follow.",
+        "Built for men who want structure, accountability, and sustainable health without sacrificing real life.",
       ],
       features: [
         "Structured training plan (gym or home)",
@@ -65,19 +62,17 @@ export const siteData = {
         "Clear direction. No guesswork",
         "Built for consistency, not intensity spikes",
       ],
-      cta: "START MEN'S 7-DAY TRIAL",
+      cta: "Explore MFA",
       featured: true,
       image: "/images/programs/mens-fitness-alliance.png",
       href: "/programs/trial",
     },
     {
       badge: "WOMEN'S 7-DAY TRIAL",
-      title: "Women's Wellness — 7 Day Trial",
+      title: "Women's Wellness Program™",
       tagline: "REAL STRUCTURE. REAL SUPPORT. REAL PROGRESS.",
       desc: [
-        "Built for women over 35 who want results without the overwhelm.",
-        "If you've been trying to stay consistent but nothing is sticking, this gives you structure, support, and a clear path forward.",
-        "No extremes. No confusion. Just a system designed to fit your life.",
+        "Designed for women seeking structured fitness, nutritional support, and a wellness-first approach.",
       ],
       features: [
         "Flexible workout structure (home or gym)",
@@ -86,9 +81,9 @@ export const siteData = {
         "Designed for real schedules and real life",
         "Progress you can sustain",
       ],
-      cta: "START WOMEN'S 7-DAY TRIAL",
+      cta: "Explore WWP",
       featured: true,
-      image: "/images/programs/womens-wellness.png",
+      image: "/images/programs/bigronjones-61.jpg",
       href: "/programs/trial",
     },
   ],

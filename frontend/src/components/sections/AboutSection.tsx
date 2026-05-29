@@ -79,7 +79,7 @@ export default function AboutSection() {
               transition={{ duration: 0.9, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               style={{ willChange: "transform" }}
             >
-              <img src={image} alt="Big Ron Jones" className="object-cover object-top" />
+              <img src={image} alt="Big Ron Jones" loading="lazy" decoding="async" className="object-cover object-top" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent opacity-60" />
             </motion.div>
 

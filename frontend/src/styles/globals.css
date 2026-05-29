@@ -1,6 +1,14 @@
 @import "tailwindcss";
 
 /*
+ * The admin UI lives at /admin/frontend — a sibling of the Vite root
+ * (/frontend), so Tailwind v4's automatic content detection never reaches it
+ * and its utility classes (e.g. the sidebar's lg: layout) would be dropped.
+ * Register it explicitly so those classes are generated.
+ */
+@source "../../../admin/frontend";
+
+/*
  * Brand wordmark font.
  * Drop the licensed file at /public/fonts/TTBluescreen-ExtraBold.woff2,
  * uncomment the block below, and the navbar wordmark picks it up automatically.

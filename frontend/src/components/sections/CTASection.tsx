@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { viewportOnce } from "@/lib/animations";
-import BrandName from "@/components/shared/BrandName";
+import { track } from "@/lib/track";
 
 export default function CTASection() {
   return (
@@ -40,18 +40,18 @@ export default function CTASection() {
           <motion.h2
             variants={{ hidden: { y: "110%" }, visible: { y: 0, transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] } } }}
             className="font-['Bebas_Neue'] leading-[0.88] text-white"
-            style={{ fontSize: "clamp(3rem, 10vw, 9rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 8vw, 7rem)" }}
           >
-            YOUR JOURNEY
+            YOU DO NOT NEED ANOTHER MONDAY.
           </motion.h2>
         </div>
         <div className="overflow-hidden">
           <motion.h2
             variants={{ hidden: { y: "110%" }, visible: { y: 0, transition: { duration: 0.9, delay: 0.08, ease: [0.22, 1, 0.36, 1] } } }}
             className="font-['Bebas_Neue'] leading-[0.88] text-[#E8192C]"
-            style={{ fontSize: "clamp(3rem, 10vw, 9rem)" }}
+            style={{ fontSize: "clamp(2.5rem, 8vw, 7rem)" }}
           >
-            STARTS NOW.
+            YOU NEED A PLAN.
           </motion.h2>
         </div>
 
@@ -59,7 +59,7 @@ export default function CTASection() {
           variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
           className="mx-auto mt-8 max-w-xl font-['DM_Sans'] text-lg leading-relaxed text-white/60"
         >
-          7 days. Direct coaching from <BrandName />. No commitment. The only thing between you and results is the decision to start.
+          Start where you are and let us help guide the process.
         </motion.p>
 
         <motion.div
@@ -68,15 +68,17 @@ export default function CTASection() {
         >
           <a
             href="/programs/trial"
+            onClick={() => track("trial_start_click", { event_label: "final_cta" })}
             className="inline-flex items-center bg-[#E8192C] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f]"
           >
-            START 7-DAY TRIAL
+            START MY 7 DAY TRIAL
           </a>
           <a
-            href="/about"
+            href="/apply"
+            onClick={() => track("apply_click", { event_label: "final_cta" })}
             className="inline-flex items-center border border-[#1c1c1c] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-colors hover:border-[#E8192C]"
           >
-            MEET <BrandName variant="upper" />
+            APPLY FOR FULL COACHING
           </a>
         </motion.div>
 

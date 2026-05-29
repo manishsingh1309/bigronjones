@@ -18,15 +18,15 @@ import { useCart } from "@/hooks/useCart";
 import { useAuth } from "@/hooks/useAuth";
 import { useTrialStatus } from "@/hooks/useTrialStatus";
 import { cn } from "@/lib/cn";
+import { track } from "@/lib/track";
 
 const navLinks = [
   { label: "HOME", href: "/" },
-  { label: "ABOUT", href: "/about" },
   { label: "PROGRAMS", href: "/programs" },
-  { label: "CONSULT", href: "/consult" },
-  { label: "SHOP", href: "/shop" },
-  { label: "TEAM", href: "/team" },
-  { label: "BLOG", href: "/blog" },
+  { label: "7 DAY TRIAL", href: "/programs/trial" },
+  { label: "SUCCESS STORIES", href: "/testimonials" },
+  { label: "ABOUT", href: "/about" },
+  { label: "APPLY", href: "/apply" },
 ];
 
 export default function Navbar() {
@@ -109,7 +109,7 @@ export default function Navbar() {
     ? trial.trialIsComplete
       ? { href: "/continue", label: "VIEW CONTINUATION", short: "CONTINUE" }
       : { href: "/dashboard", label: "MY DASHBOARD", short: "DASHBOARD" }
-    : { href: "/programs/trial", label: "START 7-DAY TRIAL", short: "TRY FREE" };
+    : { href: "/programs/trial", label: "START NOW", short: "START MY 7 DAY TRIAL" };
 
   return (
     <>
@@ -382,6 +382,9 @@ export default function Navbar() {
 
             <Link
               to={primaryCta.href}
+              onClick={() =>
+                track("cta_click", { event_label: "navbar_primary", cta: primaryCta.label })
+              }
               className="hidden items-center bg-[#E8192C] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#b50f1f] lg:inline-flex"
             >
               {primaryCta.label}
@@ -557,6 +560,32 @@ export default function Navbar() {
                 )}
               </motion.li>
             </motion.ul>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile sticky CTA — full-width bar pinned to the bottom on phones.
+          Appears once the user scrolls (so it never blocks the hero) and
+          hides while the mobile menu is open. Desktop uses the navbar CTA. */}
+      <AnimatePresence>
+        {scrolled && !open && (
+          <motion.div
+            key="mobile-sticky-cta"
+            initial={{ y: 80 }}
+            animate={{ y: 0 }}
+            exit={{ y: 80 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-x-0 bottom-0 z-[55] lg:hidden"
+          >
+            <Link
+              to={primaryCta.href}
+              onClick={() =>
+                track("cta_click", { event_label: "mobile_sticky_cta", cta: primaryCta.short })
+              }
+              className="flex items-center justify-center bg-[#E8192C] py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white shadow-[0_-6px_24px_rgba(0,0,0,0.5)]"
+            >
+              {primaryCta.short}
+            </Link>
           </motion.div>
         )}
       </AnimatePresence>

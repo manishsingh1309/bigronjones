@@ -45,7 +45,7 @@ export default function YouTubeSection() {
               className="group cursor-pointer overflow-hidden rounded-2xl border border-white/10 bg-[#111827] transition-all duration-300 hover:border-brand-red/30"
             >
               <div className="relative h-48 overflow-hidden">
-                <img src={v.image} alt={v.title} className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                <img src={v.image} alt={v.title} loading="lazy" decoding="async" className="object-cover transition-transform duration-500 group-hover:scale-110" />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 transition-colors group-hover:bg-black/50">
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-white/90 transition-transform group-hover:scale-110">
                     <Play size={24} className="ml-1 text-brand-red" fill="currentColor" />

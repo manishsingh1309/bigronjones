@@ -1,6 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Star, StarHalf } from "lucide-react";
+import { Link } from "react-router-dom";
 import { siteData, type Testimonial } from "@/data/site";
 import { viewportOnce } from "@/lib/animations";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -106,8 +107,8 @@ export default function TestimonialsSection() {
             — CLIENT RESULTS
           </motion.p>
           <h2 className="flex flex-wrap gap-x-4 font-['Bebas_Neue'] leading-[0.9] text-white">
-            {["WHAT", "THEY'RE", "SAYING."].map((word, i) => (
-              <span key={word} className="inline-block overflow-hidden">
+            {["REAL", "PEOPLE.", "REAL", "PROGRESS."].map((word, i) => (
+              <span key={`${word}-${i}`} className="inline-block overflow-hidden">
                 <motion.span
                   className="inline-block"
                   style={{ fontSize: "clamp(2.75rem, 8vw, 7rem)" }}
@@ -154,6 +155,15 @@ export default function TestimonialsSection() {
             </div>
           </div>
         )}
+
+        <div className="mt-12 flex justify-center">
+          <Link
+            to="/testimonials"
+            className="inline-flex items-center bg-[#E8192C] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f]"
+          >
+            VIEW MORE STORIES
+          </Link>
+        </div>
       </div>
     </section>
   );

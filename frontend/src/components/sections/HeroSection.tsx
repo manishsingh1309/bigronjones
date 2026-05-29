@@ -18,7 +18,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { siteData } from "@/data/site";
-import BrandName from "@/components/shared/BrandName";
+import { track } from "@/lib/track";
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
@@ -28,7 +28,7 @@ export default function HeroSection() {
     setMounted(true);
   }, []);
 
-  const { tagline, sub, lines } = siteData.hero;
+  const { tagline, lines } = siteData.hero;
 
   return (
     <section
@@ -129,63 +129,41 @@ export default function HeroSection() {
             })}
           </h1>
 
-          {/* Descriptor */}
+          {/* Subheadline */}
           <motion.p
-            className="mt-8 font-['DM_Mono'] text-[11px] uppercase tracking-[0.35em] text-white/50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            className="mt-8 max-w-[620px] font-['DM_Sans'] text-lg leading-relaxed text-white/80"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.9 }}
           >
-            {sub}
+            Private fitness oversight for adults 35+ through training, nutrition, accountability, and weekly coaching.
           </motion.p>
 
-          {/* Ron's name + role */}
-          <motion.div
-            className="mt-8 border-l-2 border-[#E8192C] pl-4"
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 2.0 }}
-          >
-            <p className="font-['DM_Sans'] text-sm leading-relaxed text-white/80">
-              — <BrandName className="font-medium text-white" />, Performance Coach for Real World Results · 20 Years Coaching
-            </p>
-          </motion.div>
-
           {/* Body paragraph */}
-          <motion.div
-            className="mt-8 max-w-[620px] flex flex-col gap-4 font-['DM_Sans'] text-base leading-[1.75] text-white/70"
+          <motion.p
+            className="mt-6 max-w-[620px] font-['DM_Sans'] text-base leading-[1.75] text-white/65"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2.05 }}
           >
-            <p>
-              Most people over 35 don&rsquo;t have a discipline problem. They have a structure problem.
-            </p>
-            <p>
-              If you&rsquo;ve been starting and stopping, trying different plans, and still not seeing it come together, that&rsquo;s not by accident.
-            </p>
-            <p>
-              You don&rsquo;t need more information. You need a system you can actually follow with real accountability.
-            </p>
-            <p>
-              The 7-Day Trial is where you step into that system and see what&rsquo;s been missing.
-            </p>
-          </motion.div>
+            No guessing. No generic plans. No being left alone. Build strength, improve health, and create sustainable habits with structured support designed for real life.
+          </motion.p>
 
           {/* CTAs */}
           <motion.div
-            className="mt-10 flex flex-wrap items-center gap-5"
+            className="mt-10 flex flex-wrap items-center gap-4"
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 2.15, ease: [0.22, 1, 0.36, 1] }}
           >
             <motion.a
               href="/programs/trial"
+              onClick={() => track("trial_start_click", { event_label: "hero_cta" })}
               className="group relative overflow-hidden bg-[#E8192C] px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white"
               whileHover={{ scale: 1.04, backgroundColor: "#b50f1f" }}
               whileTap={{ scale: 0.97 }}
             >
-              <span className="relative z-10">START 7-DAY TRIAL</span>
+              <span className="relative z-10">Start My 7 Day Trial</span>
               <motion.span
                 aria-hidden
                 className="absolute inset-0 bg-white/15"
@@ -195,18 +173,26 @@ export default function HeroSection() {
               />
             </motion.a>
 
-            <div className="flex flex-col gap-1">
-              <a
-                href="/about"
-                className="w-fit border-b border-white/20 pb-0.5 font-['DM_Sans'] text-sm text-white/60 transition-colors hover:border-white hover:text-white"
-              >
-                Meet <BrandName /> →
-              </a>
-              <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/30">
-                No contracts. Cancel anytime.
-              </p>
-            </div>
+            <motion.a
+              href="/apply"
+              onClick={() => track("apply_click", { event_label: "hero_cta" })}
+              className="border border-[#1c1c1c] px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white/80 transition-colors hover:border-[#E8192C] hover:text-white"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              Apply For Full Coaching
+            </motion.a>
           </motion.div>
+
+          {/* Trust line */}
+          <motion.p
+            className="mt-8 font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/40"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 2.3 }}
+          >
+            20+ Years Coaching • Weekly Oversight • Home &amp; Gym Options
+          </motion.p>
         </div>
       </motion.div>
 
