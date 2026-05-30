@@ -19,7 +19,9 @@ export type SendEmailInput = {
   to: string | string[];
   subject: string;
   html: string;
+  text?: string;
   replyTo?: string;
+  headers?: Record<string, string>;
 };
 
 export type EmailResult =
@@ -40,7 +42,9 @@ export async function sendEmail(input: SendEmailInput): Promise<EmailResult> {
     to: input.to,
     subject: input.subject,
     html: input.html,
+    text: input.text,
     replyTo: input.replyTo,
+    headers: input.headers,
   });
 
   if (error) {

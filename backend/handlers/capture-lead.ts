@@ -4,7 +4,7 @@
 //   1. Validate input.
 //   2. Save the lead to Supabase BEFORE attempting email send — if email
 //      fails the lead is still in the DB and can be retried.
-//   3. Send the delivery email via Gmail SMTP (preferred) or Resend (fallback).
+//   3. Send the delivery email via Resend.
 //   4. Mark pdf_sent only if the send confirmed.
 //   5. Always return success to the user as long as the lead is saved.
 //      (Retries can be triggered manually from the leads table.)
@@ -13,13 +13,12 @@
 // youtube | url | file). The delivery URL is `pdf_url` for uploaded files
 // or `external_url` for YouTube/links. The email template adapts copy and
 // CTA wording to the type.
-import { Resend } from "resend";
 import { createServerSupabase } from "../lib/supabase";
 import {
   contentDeliveryEmail,
   type ContentType,
 } from "../lib/emailTemplates";
-import { sendEmail, isMailerConfigured } from "../lib/mailer";
+import { sendEmail } from "../lib/email";
 import {
   LeadContextSchema,
   LeadFormSchema,
@@ -170,11 +169,9 @@ export default async function handler(req: Request): Promise<Response> {
   let emailSent = false;
   let emailError: string | null = null;
 
-  if (isMailerConfigured()) {
-    // Preferred path: Gmail SMTP (free, no domain verification needed).
+  if (process.env.RESEND_API_KEY) {
     const result = await sendEmail({
       to: email,
-      toName: firstName,
       subject,
       html: emailHtml,
       text: `Hi ${firstName}, your content is ready: ${deliveryUrl}`,
@@ -183,31 +180,14 @@ export default async function handler(req: Request): Promise<Response> {
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
     });
-    emailSent = result.success;
-    if (!result.success) emailError = result.error;
-  } else if (process.env.RESEND_API_KEY) {
-    // Fallback: Resend if configured.
-    try {
-      const resend = new Resend(process.env.RESEND_API_KEY);
-      await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL || "ron@bigronjones.com",
-        to: email,
-        subject,
-        text: `Hi ${firstName}, your content is ready: ${deliveryUrl}`,
-        html: emailHtml,
-        headers: {
-          "List-Unsubscribe": `<${unsubscribeUrl}>`,
-          "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
-        },
-      });
-      emailSent = true;
-    } catch (err) {
-      emailError = err instanceof Error ? err.message : "Resend send failed";
-      console.error("[capture-lead] Resend send failed:", err);
+    emailSent = result.ok;
+    if (!result.ok) {
+      emailError = result.detail || result.reason;
+      console.error("[capture-lead] Resend send failed:", emailError);
     }
   } else {
     console.warn(
-      `[capture-lead][DEV] Email not configured — would send to ${email}: ${deliveryUrl}`
+      `[capture-lead][DEV] RESEND_API_KEY not set — would send to ${email}: ${deliveryUrl}`
     );
     // In dev with no mailer, treat as sent so the UI flows correctly.
     emailSent = true;
