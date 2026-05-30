@@ -24,10 +24,13 @@ export type UseAuthReturn = AuthState & {
 };
 
 function siteOrigin(): string {
-  const fromEnv = import.meta.env.VITE_SITE_URL as string | undefined;
-  if (fromEnv) return fromEnv.replace(/\/$/, "");
+  // Always use the live host the user is actually on, so auth redirects come
+  // back to the same domain (e.g. https://www.bigronjones.com). Preferring a
+  // build-time VITE_SITE_URL here is what caused logins on the custom domain
+  // to bounce to the Render *.onrender.com origin baked in at build time.
   if (typeof window !== "undefined") return window.location.origin;
-  return "";
+  const fromEnv = import.meta.env.VITE_SITE_URL as string | undefined;
+  return fromEnv ? fromEnv.replace(/\/$/, "") : "";
 }
 
 export function useAuth(): UseAuthReturn {
