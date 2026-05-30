@@ -2,7 +2,9 @@
 // Calls the capture-lead API directly (well — bypasses it since the
 // magnet/email/template logic lives there). Instead, calls the mailer
 // the same way capture-lead does, so the result reflects production behavior.
+import dns from "node:dns/promises";
 import fs from "node:fs";
+import net from "node:net";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import nodemailer from "nodemailer";
@@ -35,11 +37,17 @@ if (error) {
 console.log(`Found ${pending.length} pending lead(s) to retry`);
 if (pending.length === 0) process.exit(0);
 
+const smtpHostname = process.env.SMTP_HOST;
+const smtpHost =
+  net.isIP(smtpHostname) ? smtpHostname : (await dns.resolve4(smtpHostname))[0];
+
 const transport = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
+  host: smtpHost,
   port: Number(process.env.SMTP_PORT),
   secure: false,
   auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  servername: smtpHostname,
+  tls: { servername: smtpHostname },
 });
 
 const siteUrl = (process.env.SITE_URL || "https://bigronjones.com").replace(/\/$/, "");

@@ -7,30 +7,56 @@
 //   SMTP_USER=ron@bigronjones.com
 //   SMTP_PASS=<gmail app password, no spaces>
 //   SMTP_FROM_NAME=Big Ron Jones
+import dns from "node:dns/promises";
+import net from "node:net";
 import nodemailer, { type Transporter } from "nodemailer";
 
 let cached: Transporter | null = null;
+let initPromise: Promise<Transporter> | null = null;
 
-function getTransporter(): Transporter {
+/** Resolve SMTP host to IPv4 only (Render/Vercel often have no IPv6 route to Gmail). */
+async function resolveSmtpIPv4(hostname: string): Promise<string> {
+  if (net.isIP(hostname)) return hostname;
+  const addresses = await dns.resolve4(hostname);
+  if (!addresses.length) {
+    throw new Error(`No IPv4 address found for SMTP host: ${hostname}`);
+  }
+  return addresses[0];
+}
+
+async function getTransporter(): Promise<Transporter> {
   if (cached) return cached;
+  if (!initPromise) {
+    initPromise = createTransporter().catch((err) => {
+      initPromise = null;
+      throw err;
+    });
+  }
+  return initPromise;
+}
 
-  const host = process.env.SMTP_HOST;
+async function createTransporter(): Promise<Transporter> {
+  const hostname = process.env.SMTP_HOST;
   const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER;
   const pass = process.env.SMTP_PASS;
 
-  if (!host || !user || !pass) {
+  if (!hostname || !user || !pass) {
     throw new Error(
       "SMTP not configured. Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in .env."
     );
   }
 
+  // Nodemailer 8 picks a random A/AAAA record; IPv6 often fails with ENETUNREACH on cloud hosts.
+  const connectHost = await resolveSmtpIPv4(hostname);
+
   cached = nodemailer.createTransport({
-    host,
+    host: connectHost,
     port,
     secure: port === 465,
     auth: { user, pass },
-    family: 4,
+    servername: hostname,
+    tls: { servername: hostname },
   });
   return cached;
 }
@@ -56,7 +82,8 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
     : input.to;
 
   try {
-    const info = await getTransporter().sendMail({
+    const transport = await getTransporter();
+    const info = await transport.sendMail({
       from: `"${fromName}" <${fromEmail}>`,
       to: toAddress,
       subject: input.subject,
