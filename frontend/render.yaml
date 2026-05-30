@@ -1,0 +1,187 @@
+# Render Blueprint — defines all Render services for this project.
+# To deploy: Render Dashboard → New + → Blueprint → connect this repo.
+#
+# After the services exist:
+#   1. Open each service → "Environment" → fill in the keys marked
+#      `sync: false` below (they are not stored in git for security).
+#   2. Copy the web service URL (e.g. https://bigronjones-api.onrender.com)
+#      into:
+#        - vercel.json   (rewrites[0].destination)
+#        - the cron job's startCommand below (replace REPLACE-ME-RENDER-URL)
+#      then redeploy this blueprint.
+#
+# Free tier note: the web service sleeps after ~15 min idle. First request
+# after sleep takes 30–60s. Stripe/Calendly webhooks may time out during
+# wake-up — they retry, but consider upgrading to Starter ($7/mo) before
+# going live.
+
+services:
+  # ────────────────────────────────────────────────────────────────────────
+  # Static site — Vite/React SPA (frontend/), built to ./dist
+  #
+  # The two routes below mirror what vercel.json did:
+  #   1. /api/*  → proxied to the backend web service (same-origin, so no
+  #      CORS or cross-site-cookie problems).
+  #   2. /*      → /index.html, the SPA fallback. WITHOUT this rule every
+  #      deep link or page refresh returns "Not Found" — client-side
+  #      routing (react-router) needs index.html served for all paths.
+  #
+  # ORDER MATTERS: the /api proxy must come before the /* catch-all,
+  # otherwise /api/* requests would also be rewritten to index.html.
+  # ────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: bigronjones-frontend
+    runtime: static
+    branch: main
+    rootDir: .
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://bigronjones.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Browser-exposed config (VITE_-prefixed, baked in at build time).
+      - key: VITE_SITE_URL
+        sync: false
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_GA_ID
+        sync: false
+
+  # ────────────────────────────────────────────────────────────────────────
+  # Web service — Node HTTP server (backend/server.ts)
+  # ────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: bigronjones-api
+    runtime: node
+    plan: free
+    region: oregon
+    branch: main
+    rootDir: .
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /healthz
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+
+      # The exact Vercel origin allowed by CORS. Update after the Vercel
+      # project URL is known (e.g. https://bigronjones.vercel.app or your
+      # custom domain). Use "*" only temporarily during smoke-testing.
+      - key: FRONTEND_ORIGIN
+        sync: false
+
+      # User-facing site URL — used by Stripe success/cancel redirects,
+      # email links, OAuth callbacks. Should be the Vercel/custom domain.
+      - key: SITE_URL
+        sync: false
+      - key: VITE_SITE_URL
+        sync: false
+
+      # Supabase (service role — server-side only, never expose to browser)
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+
+      # Stripe
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_CHECKOUT_LINK
+        sync: false
+
+      # Email (Resend)
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      - key: RESEND_AUDIENCE_ID
+        sync: false
+      - key: CONTACT_INBOX_EMAIL
+        sync: false
+
+      # Calendly
+      - key: CALENDLY_WEBHOOK_SECRET
+        sync: false
+
+      # AI providers (used by /api/generate-blogs etc.)
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # Blog cover images (OPTIONAL). Without these the generator uses Ron's
+      # own on-brand photos. Add to fetch fresh topic-matched stock photos.
+      - key: UNSPLASH_ACCESS_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+
+      # Shared secret for cron-protected endpoints
+      # Generate once: openssl rand -hex 32
+      - key: CRON_SECRET
+        sync: false
+
+  # ────────────────────────────────────────────────────────────────────────
+  # Cron — daily 7-day trial email scheduler
+  # Replaces the old Vercel cron (path /api/cron/email-scheduler @ 06:00 UTC).
+  # Note: Render cron jobs run on the Starter plan or above ($1+/mo) —
+  # there is no free cron tier.
+  # ────────────────────────────────────────────────────────────────────────
+  - type: cron
+    name: bigronjones-email-scheduler
+    runtime: node
+    plan: starter
+    region: oregon
+    branch: main
+    schedule: "0 6 * * *"
+    # The "build" is a no-op — we only need curl, which the Render base
+    # image already provides.
+    buildCommand: "echo no-op"
+    # Hits the email-scheduler endpoint on the web service above. The
+    # handler requires ?secret=<CRON_SECRET>. After the web service URL is
+    # known, replace REPLACE-ME-RENDER-URL below with it.
+    startCommand: |
+      curl --fail --silent --show-error \
+        "https://REPLACE-ME-RENDER-URL.onrender.com/api/cron/email-scheduler?secret=$CRON_SECRET"
+    envVars:
+      # Same value as the web service's CRON_SECRET — must match.
+      - key: CRON_SECRET
+        sync: false
+
+  # ────────────────────────────────────────────────────────────────────────
+  # Cron — daily trend-based AI blog generation (3 posts @ 08:00 UTC)
+  # Fetches trending fitness topics, writes posts with Gemini in Ron's voice,
+  # and publishes them to Supabase (table from backend/sql/11_blog_system.sql).
+  # Requires GOOGLE_API_KEY on the web service. Cron runs on Starter+ ($1+/mo).
+  # ────────────────────────────────────────────────────────────────────────
+  - type: cron
+    name: bigronjones-blog-generator
+    runtime: node
+    plan: starter
+    region: oregon
+    branch: main
+    schedule: "0 8 * * *"
+    buildCommand: "echo no-op"
+    # Hits the generate-blogs endpoint on the web service. The handler requires
+    # ?secret=<CRON_SECRET>. After the web service URL is known, replace
+    # REPLACE-ME-RENDER-URL below with it.
+    startCommand: |
+      curl --fail --silent --show-error --max-time 280 \
+        "https://REPLACE-ME-RENDER-URL.onrender.com/api/generate-blogs?secret=$CRON_SECRET"
+    envVars:
+      # Same value as the web service's CRON_SECRET — must match.
+      - key: CRON_SECRET
+        sync: false
