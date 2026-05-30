@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion } from "framer-motion";
 import { seedBlogs } from "@/data/seedBlogs";
 import type { Blog } from "@/lib/blogStore";
@@ -7,7 +7,25 @@ import BlogFilters from "@/components/blog/BlogFilters";
 import { formatBlogDate } from "@/lib/blogUtils";
 
 export default function BlogListingPage() {
-  const [blogs] = useState<Blog[]>(seedBlogs);
+  // Seed blogs render instantly (no spinner); the live, AI-generated posts
+  // from the API replace them once loaded. On any failure we keep the seed.
+  const [blogs, setBlogs] = useState<Blog[]>(seedBlogs);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/blogs")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data: Blog[]) => {
+        if (active && Array.isArray(data) && data.length > 0) setBlogs(data);
+      })
+      .catch(() => {
+        /* keep seed blogs */
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [visibleCount, setVisibleCount] = useState(6);

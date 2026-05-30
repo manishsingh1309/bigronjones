@@ -80,6 +80,13 @@ services:
       - key: ANTHROPIC_API_KEY
         sync: false
 
+      # Blog cover images (OPTIONAL). Without these the generator uses Ron's
+      # own on-brand photos. Add to fetch fresh topic-matched stock photos.
+      - key: UNSPLASH_ACCESS_KEY
+        sync: false
+      - key: PEXELS_API_KEY
+        sync: false
+
       # Shared secret for cron-protected endpoints
       # Generate once: openssl rand -hex 32
       - key: CRON_SECRET
@@ -107,6 +114,31 @@ services:
     startCommand: |
       curl --fail --silent --show-error \
         "https://REPLACE-ME-RENDER-URL.onrender.com/api/cron/email-scheduler?secret=$CRON_SECRET"
+    envVars:
+      # Same value as the web service's CRON_SECRET — must match.
+      - key: CRON_SECRET
+        sync: false
+
+  # ────────────────────────────────────────────────────────────────────────
+  # Cron — daily trend-based AI blog generation (3 posts @ 08:00 UTC)
+  # Fetches trending fitness topics, writes posts with Gemini in Ron's voice,
+  # and publishes them to Supabase (table from backend/sql/11_blog_system.sql).
+  # Requires GOOGLE_API_KEY on the web service. Cron runs on Starter+ ($1+/mo).
+  # ────────────────────────────────────────────────────────────────────────
+  - type: cron
+    name: bigronjones-blog-generator
+    runtime: node
+    plan: starter
+    region: oregon
+    branch: main
+    schedule: "0 8 * * *"
+    buildCommand: "echo no-op"
+    # Hits the generate-blogs endpoint on the web service. The handler requires
+    # ?secret=<CRON_SECRET>. After the web service URL is known, replace
+    # REPLACE-ME-RENDER-URL below with it.
+    startCommand: |
+      curl --fail --silent --show-error --max-time 280 \
+        "https://REPLACE-ME-RENDER-URL.onrender.com/api/generate-blogs?secret=$CRON_SECRET"
     envVars:
       # Same value as the web service's CRON_SECRET — must match.
       - key: CRON_SECRET

@@ -15,6 +15,7 @@ import adminTrialStats from "../../admin/backend/handlers/trial-stats";
 import adminTrialUsers from "../../admin/backend/handlers/trial-users";
 import adminUploadUrl from "../../admin/backend/handlers/upload-url";
 import apply from "./apply";
+import blogView from "./blog-view";
 import blogs from "./blogs";
 import bookingCompletion from "./booking-completion";
 import captureLead from "./capture-lead";
@@ -61,6 +62,7 @@ export const handlerMap: Record<string, ApiHandler> = {
   "admin/trial-users": adminTrialUsers,
   "admin/upload-url": adminUploadUrl,
   apply,
+  "blog-view": blogView,
   blogs,
   "booking-completion": bookingCompletion,
   "capture-lead": captureLead,
