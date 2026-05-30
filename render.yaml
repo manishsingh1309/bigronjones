@@ -17,6 +17,48 @@
 
 services:
   # ────────────────────────────────────────────────────────────────────────
+  # Static site — Vite/React SPA (frontend/), built to ./dist
+  #
+  # The two routes below mirror what vercel.json did:
+  #   1. /api/*  → proxied to the backend web service (same-origin, so no
+  #      CORS or cross-site-cookie problems).
+  #   2. /*      → /index.html, the SPA fallback. WITHOUT this rule every
+  #      deep link or page refresh returns "Not Found" — client-side
+  #      routing (react-router) needs index.html served for all paths.
+  #
+  # ORDER MATTERS: the /api proxy must come before the /* catch-all,
+  # otherwise /api/* requests would also be rewritten to index.html.
+  # ────────────────────────────────────────────────────────────────────────
+  - type: web
+    name: bigronjones-frontend
+    runtime: static
+    branch: main
+    rootDir: .
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://bigronjones.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      # Browser-exposed config (VITE_-prefixed, baked in at build time).
+      - key: VITE_SITE_URL
+        sync: false
+      - key: VITE_SUPABASE_URL
+        sync: false
+      - key: VITE_SUPABASE_ANON_KEY
+        sync: false
+      - key: VITE_STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: VITE_GA_ID
+        sync: false
+
+  # ────────────────────────────────────────────────────────────────────────
   # Web service — Node HTTP server (backend/server.ts)
   # ────────────────────────────────────────────────────────────────────────
   - type: web
