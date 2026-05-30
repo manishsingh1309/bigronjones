@@ -189,7 +189,7 @@ export default async function handler(req: Request): Promise<Response> {
     console.warn(
       `[capture-lead][DEV] RESEND_API_KEY not set — would send to ${email}: ${deliveryUrl}`
     );
-    // In dev with no mailer, treat as sent so the UI flows correctly.
+    // In dev with no Resend key, treat as sent so the UI flows correctly.
     emailSent = true;
   }
 

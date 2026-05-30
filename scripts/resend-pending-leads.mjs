@@ -1,13 +1,10 @@
 // Retry email delivery for every lead row where pdf_sent = false.
-// Calls the capture-lead API directly (well — bypasses it since the
-// magnet/email/template logic lives there). Instead, calls the mailer
-// the same way capture-lead does, so the result reflects production behavior.
-import dns from "node:dns/promises";
+// Sends through Resend the same way capture-lead does, so the result
+// reflects production behavior.
 import fs from "node:fs";
-import net from "node:net";
 import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 const envPath = path.resolve(process.cwd(), ".env");
 for (const line of fs.readFileSync(envPath, "utf8").split(/\r?\n/)) {
@@ -37,18 +34,13 @@ if (error) {
 console.log(`Found ${pending.length} pending lead(s) to retry`);
 if (pending.length === 0) process.exit(0);
 
-const smtpHostname = process.env.SMTP_HOST;
-const smtpHost =
-  net.isIP(smtpHostname) ? smtpHostname : (await dns.resolve4(smtpHostname))[0];
-
-const transport = nodemailer.createTransport({
-  host: smtpHost,
-  port: Number(process.env.SMTP_PORT),
-  secure: false,
-  auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
-  servername: smtpHostname,
-  tls: { servername: smtpHostname },
-});
+if (!process.env.RESEND_API_KEY) {
+  console.error("RESEND_API_KEY not set — cannot send. Aborting.");
+  process.exit(1);
+}
+const resend = new Resend(process.env.RESEND_API_KEY);
+const fromEmail =
+  process.env.RESEND_FROM_EMAIL || "Big Ron Jones <ron@bigronjones.com>";
 
 const siteUrl = (process.env.SITE_URL || "https://bigronjones.com").replace(/\/$/, "");
 
@@ -82,8 +74,8 @@ for (const lead of pending) {
 </div></body></html>`;
 
   try {
-    const info = await transport.sendMail({
-      from: `"${process.env.SMTP_FROM_NAME || "Big Ron Jones"}" <${process.env.SMTP_USER}>`,
+    const { data, error: sendError } = await resend.emails.send({
+      from: fromEmail,
       to: lead.email,
       subject,
       html,
@@ -93,7 +85,8 @@ for (const lead of pending) {
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
     });
-    console.log(`  ✓ ${lead.email}: sent (messageId=${info.messageId})`);
+    if (sendError) throw new Error(sendError.message);
+    console.log(`  ✓ ${lead.email}: sent (id=${data?.id || ""})`);
     await sb.from("leads").update({ pdf_sent: true, pdf_sent_at: new Date().toISOString(), email_error: null }).eq("id", lead.id);
   } catch (err) {
     console.log(`  ✗ ${lead.email}: ${err.message}`);
