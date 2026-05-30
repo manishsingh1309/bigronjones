@@ -65,6 +65,7 @@ export const siteData = {
       cta: "Explore MFA",
       featured: true,
       image: "/images/programs/mens-fitness-alliance.png",
+      imagePosition: "object-center",
       href: "/programs/trial",
     },
     {
@@ -84,6 +85,9 @@ export const siteData = {
       cta: "Explore WWP",
       featured: true,
       image: "/images/programs/bigronjones-61.jpg",
+      // Ron (left) + client (right) both have their faces in the top of the
+      // frame, so anchor the crop to the top to keep both visible.
+      imagePosition: "object-top",
       href: "/programs/trial",
     },
   ],

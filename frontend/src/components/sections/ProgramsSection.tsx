@@ -69,7 +69,10 @@ export default function ProgramsSection() {
                     alt={p.title}
                     loading="lazy"
                     decoding="async"
-                    className="h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.04]"
+                    className={cn(
+                      "h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]",
+                      p.imagePosition ?? "object-center",
+                    )}
                   />
                 </motion.div>
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/40 to-[#0f0f0f]/10" />
