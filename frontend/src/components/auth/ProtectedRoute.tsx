@@ -42,29 +42,15 @@ function decide(
   temp: ReturnType<typeof readTemporaryAccess>,
 ): Decision {
   const hasTrialStart = !!user?.trialStartDate;
+  // Payment unlocks the dashboard — the Calendly call is no longer a gate.
   const isPaid =
-    user?.paymentStatus === "paid" || access.paymentStatus === "paid" || hasTrialStart;
-  const isBooked =
-    access.bookingCompleted === true ||
-    user?.bookingCompleted === true ||
-    (hasTrialStart && isPaid);
+    user?.paymentStatus === "paid" ||
+    access.paymentStatus === "paid" ||
+    hasTrialStart;
+  const tempAllowed = temp?.paymentStatus === "paid";
 
-  const tempAllowed =
-    temp?.paymentStatus === "paid" && temp?.bookingCompleted === true;
-
-  if (access.allowed === true || (isPaid && isBooked) || tempAllowed) {
+  if (access.allowed === true || isPaid || tempAllowed) {
     return { allowed: true, redirectTo: null, reason: "" };
-  }
-
-  // Paid but never booked the Calendly call — send them to /trial/success so
-  // they can pick a slot rather than dumping them on the homepage with a
-  // purchase CTA they don't need.
-  if (isPaid && !isBooked) {
-    return {
-      allowed: false,
-      redirectTo: "/trial/success",
-      reason: "Book your activation call to unlock the dashboard.",
-    };
   }
 
   // Not paid → trial purchase page (not "/", which is too vague).
@@ -114,8 +100,7 @@ export default function ProtectedRoute({ children }: { children: ReactNode }) {
         console.error("[ProtectedRoute] access check failed:", err);
         if (mounted) {
           const temp = readTemporaryAccess();
-          const tempAllowed =
-            temp?.paymentStatus === "paid" && temp?.bookingCompleted === true;
+          const tempAllowed = temp?.paymentStatus === "paid";
           setDecision(
             tempAllowed
               ? { allowed: true, redirectTo: null, reason: "" }

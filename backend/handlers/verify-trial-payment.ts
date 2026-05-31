@@ -78,28 +78,43 @@ export default async function handler(req: Request): Promise<Response> {
   const cleanEmail = email.toLowerCase().trim();
 
   const now = new Date();
+  const trialEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-  const updates: Record<string, unknown> = {
-    payment_status: "paid",
-    stripe_session_id: sessionId,
-    updated_at: now.toISOString(),
-  };
-
-  const { data, error } = await supabase
+  // Read first so we can start the 7-day trial at payment time WITHOUT ever
+  // resetting an already-running clock (e.g. webhook started it seconds ago).
+  const { data: existing, error: lookupErr } = await supabase
     .from("users")
-    .update(updates)
+    .select("id, trial_start_date")
     .eq("email", cleanEmail)
-    .select("id, email, payment_status, trial_start_date, trial_end_date")
     .maybeSingle();
-
-  if (error) {
-    console.error("[verify-trial-payment] supabase update failed:", error);
-    return Response.json({ error: error.message }, { status: 500 });
+  if (lookupErr) {
+    console.error("[verify-trial-payment] lookup failed:", lookupErr);
+    return Response.json({ error: lookupErr.message }, { status: 500 });
   }
 
-  // Edge case: the upsert at checkout time might have failed (e.g. Supabase
-  // misconfigured). Create the row now so the dashboard works.
-  if (!data) {
+  if (existing) {
+    const updates: Record<string, unknown> = {
+      payment_status: "paid",
+      stripe_session_id: sessionId,
+      updated_at: now.toISOString(),
+    };
+    // Payment unlocks the trial — start it now if it hasn't started yet.
+    if (!existing.trial_start_date) {
+      updates.trial_start_date = now.toISOString();
+      updates.trial_end_date = trialEnd.toISOString();
+    }
+    const { error } = await supabase
+      .from("users")
+      .update(updates)
+      .eq("id", existing.id);
+    if (error) {
+      console.error("[verify-trial-payment] supabase update failed:", error);
+      return Response.json({ error: error.message }, { status: 500 });
+    }
+  } else {
+    // Edge case: the upsert at checkout time failed (e.g. Supabase
+    // misconfigured) or the webhook hasn't created the row yet. Create it now,
+    // already paid and with the trial started, so the dashboard works.
     const { error: insertErr } = await supabase.from("users").insert({
       email: cleanEmail,
       name:
@@ -108,6 +123,8 @@ export default async function handler(req: Request): Promise<Response> {
       payment_status: "paid",
       stripe_session_id: sessionId,
       program_type: session.metadata?.programType || "general",
+      trial_start_date: now.toISOString(),
+      trial_end_date: trialEnd.toISOString(),
     });
     if (insertErr) {
       console.error(

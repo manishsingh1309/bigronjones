@@ -64,7 +64,7 @@ async function markUserPaid(session: StripeCheckoutSession) {
 
   const { data: existing, error: lookupErr } = await db
     .from("users")
-    .select("id, payment_status, stripe_session_id")
+    .select("id, payment_status, stripe_session_id, trial_start_date")
     .eq("email", email)
     .maybeSingle();
 
@@ -73,13 +73,23 @@ async function markUserPaid(session: StripeCheckoutSession) {
     return { ok: false, reason: "lookup-failed" as const };
   }
 
+  // Payment unlocks the trial — start the 7-day clock now (trial checkouts
+  // only), but never reset an already-running trial.
+  const now = new Date();
+  const trialEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+  const startsTrial = checkoutType === "trial";
+
   if (existing) {
     const updates: Record<string, unknown> = {
       payment_status: "paid",
       stripe_session_id: session.id,
-      updated_at: new Date().toISOString(),
+      updated_at: now.toISOString(),
     };
     if (programType) updates.program_type = programType;
+    if (startsTrial && !existing.trial_start_date) {
+      updates.trial_start_date = now.toISOString();
+      updates.trial_end_date = trialEnd.toISOString();
+    }
 
     const { error: updErr } = await db
       .from("users")
@@ -100,6 +110,12 @@ async function markUserPaid(session: StripeCheckoutSession) {
       payment_status: "paid",
       stripe_session_id: session.id,
       program_type: programType || (checkoutType === "trial" ? "general" : null),
+      ...(startsTrial
+        ? {
+            trial_start_date: now.toISOString(),
+            trial_end_date: trialEnd.toISOString(),
+          }
+        : {}),
     });
     if (insErr) {
       console.error("[stripe-webhook] users insert failed:", insErr);

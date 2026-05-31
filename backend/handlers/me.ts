@@ -15,29 +15,42 @@ export default async function handler(req: Request): Promise<Response> {
     });
     const { authUser, appUser } = await getAuthenticatedUser(req);
 
-    // Self-heal: if the user has a trial_start_date (only written after a
-    // verified Stripe payment) but payment_status is still "pending", the
-    // browser-side verify-trial-payment never landed. Promote them to "paid"
-    // here so future requests don't keep tripping the paywall.
-    if (
-      appUser.trial_start_date &&
-      appUser.payment_status !== "paid"
-    ) {
+    // Self-heal so payment and trial-start stay in lock-step (payment unlocks
+    // the trial dashboard). Two directions:
+    //   1. Has a trial_start_date but status stuck at "pending" — the
+    //      browser-side verify never landed; promote to "paid".
+    //   2. Is "paid" but has no trial_start_date — e.g. paid before this
+    //      access model, or a path marked paid without starting the trial;
+    //      start the 7-day clock now so the dashboard opens.
+    const isPaid = appUser.payment_status === "paid" || !!appUser.trial_start_date;
+    const needsPromote = !!appUser.trial_start_date && appUser.payment_status !== "paid";
+    const needsTrialStart = isPaid && !appUser.trial_start_date;
+
+    if (needsPromote || needsTrialStart) {
       const db = createServerSupabase();
+      const now = new Date();
+      const heal: Record<string, unknown> = {
+        payment_status: "paid",
+        updated_at: now.toISOString(),
+      };
+      if (needsTrialStart) {
+        heal.trial_start_date = now.toISOString();
+        heal.trial_end_date = new Date(
+          now.getTime() + 7 * 24 * 60 * 60 * 1000,
+        ).toISOString();
+      }
       const { error: healError } = await db
         .from("users")
-        .update({
-          payment_status: "paid",
-          updated_at: new Date().toISOString(),
-        })
+        .update(heal)
         .eq("id", appUser.id);
       if (healError) {
-        console.warn(
-          "[/api/me] self-heal payment_status failed:",
-          healError.message,
-        );
+        console.warn("[/api/me] self-heal failed:", healError.message);
       } else {
         appUser.payment_status = "paid";
+        if (needsTrialStart) {
+          appUser.trial_start_date = heal.trial_start_date as string;
+          appUser.trial_end_date = heal.trial_end_date as string;
+        }
       }
     }
 

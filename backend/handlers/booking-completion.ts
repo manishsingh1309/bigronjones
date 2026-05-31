@@ -120,18 +120,23 @@ export default async function handler(req: Request): Promise<Response> {
     : bookingTime;
   const trialEnd = addDays(trialStart, 7);
 
-  // Atomic write: payment_status, booking flag, and trial dates all land in
-  // one update so a re-login mid-flow can never see a half-activated trial.
+  // Payment already starts the trial, so the clock may already be running.
+  // Record the booking but PRESERVE an existing trial_start_date — never reset
+  // the 7-day window because the user booked their (now optional) call later.
+  const bookingUpdates: Record<string, unknown> = {
+    payment_status: "paid",
+    has_booked_calendly: true,
+    calendly_event_id: calendlyEventId || undefined,
+    updated_at: new Date().toISOString(),
+  };
+  if (!existing.trial_start_date) {
+    bookingUpdates.trial_start_date = trialStart.toISOString();
+    bookingUpdates.trial_end_date = trialEnd.toISOString();
+  }
+
   const { data, error } = await supabase
     .from("users")
-    .update({
-      payment_status: "paid",
-      has_booked_calendly: true,
-      trial_start_date: trialStart.toISOString(),
-      trial_end_date: trialEnd.toISOString(),
-      calendly_event_id: calendlyEventId || undefined,
-      updated_at: new Date().toISOString(),
-    })
+    .update(bookingUpdates)
     .eq("email", email)
     .select(
       "id, email, payment_status, has_booked_calendly, trial_start_date, trial_end_date, calendly_event_id",
