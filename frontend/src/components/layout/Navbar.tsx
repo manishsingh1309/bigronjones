@@ -26,6 +26,7 @@ const navLinks = [
   { label: "7 DAY TRIAL", href: "/programs/trial" },
   { label: "SUCCESS STORIES", href: "/testimonials" },
   { label: "ABOUT", href: "/about" },
+  { label: "BLOG", href: "/blog" },
   { label: "APPLY", href: "/apply" },
 ];
 

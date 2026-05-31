@@ -1,10 +1,33 @@
-
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { siteData } from "@/data/site";
+import { seedBlogs } from "@/data/seedBlogs";
+import type { Blog } from "@/lib/blogStore";
 import { viewportOnce } from "@/lib/animations";
 
 export default function BlogSection() {
+  // Show the latest real posts. Seed posts render instantly (no spinner) and
+  // the live posts from /api/blogs replace them once loaded — same strategy
+  // as the /blog listing page. On any failure we keep the seed posts.
+  const [blogs, setBlogs] = useState<Blog[]>(seedBlogs);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/blogs")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then((data: Blog[]) => {
+        if (active && Array.isArray(data) && data.length > 0) setBlogs(data);
+      })
+      .catch(() => {
+        /* keep seed blogs */
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const posts = blogs.slice(0, 3);
+
   return (
     <section id="blog" className="bg-[#050505] py-24 md:py-32">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
@@ -43,29 +66,31 @@ export default function BlogSection() {
         </motion.header>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {siteData.blog.map((post, i) => (
+          {posts.map((post, i) => (
             <motion.article
-              key={post.title}
+              key={post.id}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportOnce}
               transition={{ duration: 0.7, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
-              className="group border border-[#1a1a1a] bg-[#0f0f0f] p-7 transition-all duration-300 hover:-translate-y-1 hover:border-[#E8192C]/30"
+              className="group border border-[#1a1a1a] bg-[#0f0f0f] transition-all duration-300 hover:-translate-y-1 hover:border-[#E8192C]/30"
             >
-              <p className="mb-4 font-['DM_Mono'] text-[9px] uppercase tracking-[0.3em] text-[#E8192C]">
-                {post.tag}
-              </p>
-              <h3 className="mb-6 font-['Bebas_Neue'] text-2xl leading-tight text-white transition-colors group-hover:text-[#E8192C]">
-                {post.title}
-              </h3>
-              <div className="flex items-center justify-between pt-4 border-t border-[#1a1a1a]">
-                <span className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/30">
-                  {post.read}
-                </span>
-                <span className="text-base text-[#E8192C] transition-transform group-hover:translate-x-1">
-                  →
-                </span>
-              </div>
+              <Link to={`/blog/${post.slug}`} className="block p-7">
+                <p className="mb-4 font-['DM_Mono'] text-[9px] uppercase tracking-[0.3em] text-[#E8192C]">
+                  {post.category}
+                </p>
+                <h3 className="mb-6 font-['Bebas_Neue'] text-2xl leading-tight text-white transition-colors group-hover:text-[#E8192C]">
+                  {post.title}
+                </h3>
+                <div className="flex items-center justify-between pt-4 border-t border-[#1a1a1a]">
+                  <span className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/30">
+                    {post.readingTime}
+                  </span>
+                  <span className="text-base text-[#E8192C] transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </div>
+              </Link>
             </motion.article>
           ))}
         </div>
