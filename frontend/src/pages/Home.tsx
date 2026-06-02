@@ -1,15 +1,22 @@
 import { lazy, Suspense } from "react";
 import HeroSection from "@/components/sections/HeroSection";
 import MarqueeBand from "@/components/sections/MarqueeBand";
+import CredibilityStrip from "@/components/sections/CredibilityStrip";
 
-const ProgramsSection = lazy(() => import("@/components/sections/ProgramsSection"));
+const ProgramsSection = lazy(
+  () => import("@/components/sections/ProgramsSection"),
+);
 const TrialSection = lazy(() => import("@/components/sections/TrialSection"));
 const SplineSection = lazy(() => import("@/components/sections/SplineSection"));
-const WhyThisWorksSection = lazy(() => import("@/components/sections/WhyThisWorksSection"));
+const WhyThisWorksSection = lazy(
+  () => import("@/components/sections/WhyThisWorksSection"),
+);
 const StatsSection = lazy(() => import("@/components/sections/StatsSection"));
 const AboutSection = lazy(() => import("@/components/sections/AboutSection"));
 const TeamPreview = lazy(() => import("@/components/sections/TeamPreview"));
-const TestimonialsSection = lazy(() => import("@/components/sections/TestimonialsSection"));
+const TestimonialsSection = lazy(
+  () => import("@/components/sections/TestimonialsSection"),
+);
 const FAQSection = lazy(() => import("@/components/sections/FAQSection"));
 const BlogSection = lazy(() => import("@/components/sections/BlogSection"));
 const CTASection = lazy(() => import("@/components/sections/CTASection"));
@@ -24,6 +31,10 @@ export default function Home() {
       />
       {/* 2 — Hero */}
       <HeroSection />
+
+      {/* Credibility Strip */}
+      <CredibilityStrip />
+
       <MarqueeBand />
       {/* 3 — Program selection */}
       <Suspense fallback={<div className="h-screen bg-[#050505]" />}>

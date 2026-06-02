@@ -315,9 +315,9 @@ export default function ProgramsTrial() {
         />
         <div className="relative">
           <PageHeader
-            eyebrow="7-DAY OVERSIGHT TRIAL"
-            headline={["7 DAYS.", "DIRECT OVERSIGHT."]}
-            sub="Two 1:1 calls with Ron. Daily tracking he actually reviews. Real programming for adults 35+."
+            eyebrow="ENTRY POINT"
+            headline={["NOT READY FOR", "FULL COACHING YET?"]}
+            sub="Start with 7 days of structure, daily tracking, training direction, and two private 1:1 Zoom calls with BigRonJones® before you decide your next step."
             align="center"
           />
           <div className="mx-auto mt-12 flex max-w-3xl flex-col items-center gap-3 px-6">

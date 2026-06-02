@@ -25,7 +25,10 @@ const trialFeatures = [
 
 export default function TrialSection() {
   return (
-    <section id="trial" className="relative overflow-hidden bg-[#0a0a0a] py-24 md:py-32">
+    <section
+      id="trial"
+      className="relative overflow-hidden bg-[#0a0a0a] py-24 md:py-32"
+    >
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0"
@@ -44,23 +47,34 @@ export default function TrialSection() {
           className="mb-14 max-w-3xl"
         >
           <motion.p
-            variants={{ hidden: { opacity: 0, x: -20 }, visible: { opacity: 1, x: 0, transition: { duration: 0.6 } } }}
+            variants={{
+              hidden: { opacity: 0, x: -20 },
+              visible: { opacity: 1, x: 0, transition: { duration: 0.6 } },
+            }}
             className="mb-5 font-['DM_Mono'] text-[11px] uppercase tracking-[0.3em] text-[#E8192C]"
           >
-            — THE 7-DAY TRIAL
+            — NOT READY YET?
           </motion.p>
           <motion.h2
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
+            }}
             className="font-['Bebas_Neue'] leading-[0.92] text-white"
             style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}
           >
-            STOP GUESSING. START WITH 7 DAYS OF REAL OVERSIGHT.
+            START WITH 7 DAYS.
           </motion.h2>
           <motion.p
-            variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.7 } },
+            }}
             className="mt-5 max-w-xl font-['DM_Sans'] text-base leading-relaxed text-white/60"
           >
-            Experience how our system works before making a long-term commitment.
+            The 7-Day Oversight Trial gives you structure, training direction,
+            daily tracking, and two private 1:1 Zoom calls with BigRonJones®
+            before you decide your next step.
           </motion.p>
         </motion.header>
 
@@ -71,7 +85,11 @@ export default function TrialSection() {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={viewportOnce}
-              transition={{ duration: 0.6, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              transition={{
+                duration: 0.6,
+                delay: i * 0.08,
+                ease: [0.22, 1, 0.36, 1],
+              }}
               className="flex flex-col gap-4 border border-[#1a1a1a] bg-[#0f0f0f] p-6 transition-colors hover:border-[#E8192C]/40"
             >
               <Icon className="h-7 w-7 text-[#E8192C]" strokeWidth={1.75} />
@@ -91,13 +109,15 @@ export default function TrialSection() {
         >
           <Link
             to="/programs/trial"
-            onClick={() => track("trial_start_click", { event_label: "trial_section" })}
+            onClick={() =>
+              track("trial_start_click", { event_label: "trial_section" })
+            }
             className="inline-flex items-center bg-[#E8192C] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f]"
           >
-            START MY 7 DAY TRIAL
+            START MY 7-DAY TRIAL
           </Link>
           <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/40">
-            One Week. Real Structure. Real Feedback.
+            Two Zoom Calls. Daily Structure. Real Feedback.
           </p>
         </motion.div>
       </div>

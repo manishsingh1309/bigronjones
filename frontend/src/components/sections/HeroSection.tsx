@@ -1,4 +1,3 @@
-
 /**
  * HERO — the signature $10k moment.
  *
@@ -28,7 +27,7 @@ export default function HeroSection() {
     setMounted(true);
   }, []);
 
-  const { tagline, lines } = siteData.hero;
+  const { tagline, lines, description } = siteData.hero;
 
   return (
     <section
@@ -105,7 +104,8 @@ export default function HeroSection() {
           {/* Headline — line-by-line rise */}
           <h1 className="font-['Bebas_Neue'] leading-[0.9]">
             {lines.map((line, i) => {
-              const colorClass = line.color === "crimson" ? "text-[#E8192C]" : "text-white";
+              const colorClass =
+                line.color === "crimson" ? "text-[#E8192C]" : "text-white";
               return (
                 <span
                   key={line.text}
@@ -136,7 +136,7 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.9 }}
           >
-            Private fitness oversight for adults 35+ through training, nutrition, accountability, and weekly coaching.
+            {description}
           </motion.p>
 
           {/* Body paragraph */}
@@ -146,7 +146,9 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2.05 }}
           >
-            No guessing. No generic plans. No being left alone. Build strength, improve health, and create sustainable habits with structured support designed for real life.
+            No guessing. No generic plans. No being left alone. Build strength,
+            improve health, and create sustainable habits with structured,
+            professional coaching designed for your real life.
           </motion.p>
 
           {/* CTAs */}
@@ -154,16 +156,22 @@ export default function HeroSection() {
             className="mt-10 flex flex-wrap items-center gap-4"
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 2.15, ease: [0.22, 1, 0.36, 1] }}
+            transition={{
+              duration: 0.7,
+              delay: 2.15,
+              ease: [0.22, 1, 0.36, 1],
+            }}
           >
             <motion.a
-              href="/programs/trial"
-              onClick={() => track("trial_start_click", { event_label: "hero_cta" })}
+              href="/apply"
+              onClick={() =>
+                track("apply_click", { event_label: "hero_primary_cta" })
+              }
               className="group relative overflow-hidden bg-[#E8192C] px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white"
               whileHover={{ scale: 1.04, backgroundColor: "#b50f1f" }}
               whileTap={{ scale: 0.97 }}
             >
-              <span className="relative z-10">Start My 7 Day Trial</span>
+              <span className="relative z-10">Apply For Coaching</span>
               <motion.span
                 aria-hidden
                 className="absolute inset-0 bg-white/15"
@@ -174,13 +182,17 @@ export default function HeroSection() {
             </motion.a>
 
             <motion.a
-              href="/apply"
-              onClick={() => track("apply_click", { event_label: "hero_cta" })}
+              href="/programs/trial"
+              onClick={() =>
+                track("trial_start_click", {
+                  event_label: "hero_secondary_cta",
+                })
+              }
               className="border border-[#1c1c1c] px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white/80 transition-colors hover:border-[#E8192C] hover:text-white"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >
-              Apply For Full Coaching
+              Start 7-Day Trial
             </motion.a>
           </motion.div>
 

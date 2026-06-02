@@ -1,4 +1,3 @@
-
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -22,12 +21,11 @@ import { track } from "@/lib/track";
 
 const navLinks = [
   { label: "HOME", href: "/" },
-  { label: "PROGRAMS", href: "/programs" },
-  { label: "7 DAY TRIAL", href: "/programs/trial" },
-  { label: "SUCCESS STORIES", href: "/testimonials" },
-  { label: "ABOUT", href: "/about" },
-  { label: "BLOG", href: "/blog" },
-  { label: "APPLY", href: "/apply" },
+  { label: "MEN'S COACHING", href: "/programs/mens" },
+  { label: "WOMEN'S COACHING", href: "/programs/womens" },
+  { label: "7-DAY TRIAL", href: "/programs/trial" },
+  { label: "CONSULT", href: "/consult" },
+  { label: "PODCAST", href: "https://podcast.bigronjones.com" },
 ];
 
 export default function Navbar() {
@@ -66,7 +64,10 @@ export default function Navbar() {
     // dropdown before the Sign Out button's onClick could execute — the
     // unmount cancelled the click event entirely.
     const onClick = (e: MouseEvent) => {
-      if (accountRef.current && !accountRef.current.contains(e.target as Node)) {
+      if (
+        accountRef.current &&
+        !accountRef.current.contains(e.target as Node)
+      ) {
         setAccountOpen(false);
       }
     };
@@ -106,11 +107,16 @@ export default function Navbar() {
   // Context-aware primary CTA. New visitors see "Start 7-Day Trial"; active
   // members go straight to their dashboard; users in the post-trial window
   // are nudged to continue. Trial state hasn't loaded yet → keep the default.
-  const primaryCta = !trial.loading && trial.hasTrial
-    ? trial.trialIsComplete
-      ? { href: "/continue", label: "VIEW CONTINUATION", short: "CONTINUE" }
-      : { href: "/dashboard", label: "MY DASHBOARD", short: "DASHBOARD" }
-    : { href: "/programs/trial", label: "START NOW", short: "START MY 7 DAY TRIAL" };
+  const primaryCta =
+    !trial.loading && trial.hasTrial
+      ? trial.trialIsComplete
+        ? { href: "/continue", label: "VIEW CONTINUATION", short: "CONTINUE" }
+        : { href: "/dashboard", label: "MY DASHBOARD", short: "DASHBOARD" }
+      : {
+          href: "/programs/trial",
+          label: "START NOW",
+          short: "START MY 7 DAY TRIAL",
+        };
 
   return (
     <>
@@ -129,11 +135,15 @@ export default function Navbar() {
           "fixed top-[28px] left-0 right-0 z-50 transition-colors duration-300",
           scrolled
             ? "bg-[#050505]/92 backdrop-blur-md border-b border-[#1a1a1a]"
-            : "bg-transparent"
+            : "bg-transparent",
         )}
       >
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-20 md:px-10">
-          <Link to="/" className="flex items-center" aria-label="BigRonJones home">
+          <Link
+            to="/"
+            className="flex items-center"
+            aria-label="BigRonJones home"
+          >
             <img
               src="/assets/bigronjones-logo.png"
               alt="BIGRONJONES®"
@@ -151,14 +161,18 @@ export default function Navbar() {
                   to={item.href}
                   className={cn(
                     "relative font-['DM_Mono'] text-[10px] tracking-[0.25em] uppercase transition-colors",
-                    active ? "text-white" : "text-white/50 hover:text-white"
+                    active ? "text-white" : "text-white/50 hover:text-white",
                   )}
                 >
                   {item.label}
                   {active && (
                     <motion.span
                       layoutId="nav-underline"
-                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 500,
+                        damping: 35,
+                      }}
                       className="absolute -bottom-2 left-0 right-0 h-[1px] bg-[#E8192C]"
                     />
                   )}
@@ -384,7 +398,10 @@ export default function Navbar() {
             <Link
               to={primaryCta.href}
               onClick={() =>
-                track("cta_click", { event_label: "navbar_primary", cta: primaryCta.label })
+                track("cta_click", {
+                  event_label: "navbar_primary",
+                  cta: primaryCta.label,
+                })
               }
               className="hidden items-center bg-[#E8192C] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#b50f1f] lg:inline-flex"
             >
@@ -411,17 +428,29 @@ export default function Navbar() {
         </div>
       </motion.nav>
 
+      {/* Premium Full-Screen Mobile Navigation */}
       <AnimatePresence>
         {open && (
           <motion.div
-            key="mobile-nav"
+            key="fullscreen-mobile-nav"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[60] bg-[#050505]"
+            transition={{ duration: 0.4 }}
+            className="fixed inset-0 z-[60] flex flex-col bg-black lg:hidden"
+            style={{
+              background:
+                "radial-gradient(ellipse 80% 80% at 50% 0%, rgba(232,25,44,0.08) 0%, transparent 60%), linear-gradient(180deg, rgba(10,10,10,1) 0%, rgba(5,5,5,1) 100%)",
+            }}
           >
-            <div className="flex h-16 items-center justify-between border-b border-[#1a1a1a] px-6">
-              <Link to="/" onClick={() => setOpen(false)} className="flex items-center" aria-label="BigRonJones home">
+            {/* Header with Logo and Close */}
+            <div className="flex h-20 items-center justify-between border-b border-white/5 px-6">
+              <Link
+                to="/"
+                onClick={() => setOpen(false)}
+                className="flex items-center"
+                aria-label="BigRonJones home"
+              >
                 <img
                   src="/assets/bigronjones-logo.png"
                   alt="BIGRONJONES®"
@@ -433,134 +462,276 @@ export default function Navbar() {
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Close menu"
-                className="flex h-10 w-10 items-center justify-center border border-[#1a1a1a] text-white"
+                className="flex h-10 w-10 items-center justify-center text-white/70 transition-all duration-300 hover:text-white"
               >
-                <X size={18} />
+                <X size={24} strokeWidth={1.5} />
               </button>
             </div>
 
-            <motion.ul
-              initial="hidden"
-              animate="visible"
-              variants={{ visible: { transition: { staggerChildren: 0.06, delayChildren: 0.1 } } }}
-              className="flex flex-col gap-3 px-6 py-10"
-            >
-              {navLinks.map((item) => {
-                const active = isActive(item.href);
-                return (
-                  <motion.li
-                    key={item.href}
+            {/* Main Navigation Content */}
+            <div className="flex flex-1 flex-col overflow-y-auto">
+              {/* Navigation Links - Hero Element */}
+              <motion.nav
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.08,
+                      delayChildren: 0.15,
+                    },
+                  },
+                }}
+                className="flex-1 px-6 py-12"
+              >
+                <ul className="flex flex-col gap-y-8">
+                  {navLinks.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <motion.li
+                        key={item.href}
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          visible: {
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              duration: 0.5,
+                              ease: [0.22, 1, 0.36, 1],
+                            },
+                          },
+                        }}
+                      >
+                        <Link
+                          to={item.href}
+                          onClick={() => setOpen(false)}
+                          className="relative block"
+                        >
+                          <motion.div
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <span
+                              className={cn(
+                                "block font-['Bebas_Neue'] text-[34px] font-bold leading-[1.05] tracking-tight transition-all duration-300",
+                                active
+                                  ? "text-[#E8192C]"
+                                  : "text-white hover:text-white",
+                              )}
+                            >
+                              {item.label}
+                            </span>
+                            {active && (
+                              <motion.div
+                                layoutId="mobile-menu-underline"
+                                className="mt-1 h-[2px] w-12 bg-[#E8192C] rounded-full"
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{
+                                  duration: 0.3,
+                                  ease: [0.22, 1, 0.36, 1],
+                                }}
+                              />
+                            )}
+                          </motion.div>
+                        </Link>
+                      </motion.li>
+                    );
+                  })}
+                </ul>
+              </motion.nav>
+
+              {/* Premium CTA Card */}
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  visible: {
+                    transition: {
+                      staggerChildren: 0.1,
+                      delayChildren: 0.6,
+                    },
+                  },
+                }}
+                className="mx-6 mb-12 rounded-2xl border border-[#E8192C]/30 bg-gradient-to-br from-[#E8192C]/8 via-[#050505] to-[#050505] p-8 backdrop-blur-sm"
+                style={{
+                  boxShadow:
+                    "0 0 40px rgba(232,25,44,0.1), inset 0 0 60px rgba(232,25,44,0.05)",
+                }}
+              >
+                <motion.h3
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.4 },
+                    },
+                  }}
+                  className="mb-6 font-['Bebas_Neue'] text-2xl font-bold tracking-wide text-white"
+                >
+                  READY TO GET STARTED?
+                </motion.h3>
+
+                {/* Primary CTA */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.4 },
+                    },
+                  }}
+                  className="mb-3"
+                >
+                  <Link
+                    to={primaryCta.href}
+                    onClick={() => {
+                      setOpen(false);
+                      track("cta_click", {
+                        event_label: "mobile_menu_primary",
+                        cta: "START MY 7-DAY TRIAL",
+                      });
+                    }}
+                    className="flex h-14 items-center justify-center rounded-lg bg-[#E8192C] font-['Bebas_Neue'] text-sm font-semibold uppercase tracking-[0.1em] text-white transition-all duration-300 hover:brightness-125 active:scale-95"
+                  >
+                    START MY 7-DAY TRIAL
+                  </Link>
+                </motion.div>
+
+                {/* Secondary CTA */}
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 15 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: { duration: 0.4 },
+                    },
+                  }}
+                >
+                  <a
+                    href="https://calendly.com/bigronjonesllc/discovery-call"
+                    target="_blank"
+                    rel="noreferrer"
+                    onClick={() => setOpen(false)}
+                    className="flex h-14 items-center justify-center rounded-lg border border-white/20 font-['Bebas_Neue'] text-sm font-semibold uppercase tracking-[0.1em] text-white transition-all duration-300 hover:border-white/40 hover:bg-white/5 active:scale-95"
+                  >
+                    BOOK PRIVATE CONSULT
+                  </a>
+                </motion.div>
+
+                {/* Member-Only Links */}
+                {isAuthenticated && trial.isAdmin && (
+                  <motion.div
                     variants={{
-                      hidden: { opacity: 0, y: 20 },
+                      hidden: { opacity: 0, y: 15 },
                       visible: {
                         opacity: 1,
                         y: 0,
-                        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+                        transition: { duration: 0.4 },
                       },
                     }}
+                    className="mt-4"
                   >
                     <Link
-                      to={item.href}
+                      to="/admin"
                       onClick={() => setOpen(false)}
-                      className={cn(
-                        "block font-['Bebas_Neue'] text-5xl tracking-wide transition-colors",
-                        active ? "text-[#E8192C]" : "text-white hover:text-[#E8192C]"
-                      )}
+                      className="flex items-center justify-between gap-2 rounded-lg bg-[#E8192C]/10 px-4 py-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[#E8192C]/15"
                     >
-                      {item.label}
-                    </Link>
-                  </motion.li>
-                );
-              })}
-              <motion.li
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
-                }}
-                className="mt-6 flex flex-col gap-3"
-              >
-                <Link
-                  to={primaryCta.href}
-                  onClick={() => setOpen(false)}
-                  className="inline-flex items-center bg-[#E8192C] px-6 py-4 font-['DM_Mono'] text-xs uppercase tracking-[0.15em] text-white"
-                >
-                  {primaryCta.label}
-                </Link>
-                {/* Admin-only — quick path into the admin workspace on mobile. */}
-                {isAuthenticated && trial.isAdmin && (
-                  <Link
-                    to="/admin"
-                    onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-between gap-3 self-start border border-[#E8192C]/40 bg-[#E8192C]/10 px-6 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white"
-                  >
-                    <span className="flex items-center gap-2">
-                      <ShieldCheck size={14} />
-                      Admin Dashboard
-                    </span>
-                    <span className="text-[#E8192C]">
-                      {trial.role === "super_admin" ? "SUPER" : "ADMIN"}
-                    </span>
-                  </Link>
-                )}
-                {/* Members-only — a second clear path to the trial dashboard
-                    on mobile, so paid users don't have to hunt for it. */}
-                {isAuthenticated && trial.hasTrial && (
-                  <Link
-                    to="/dashboard"
-                    onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-between gap-3 self-start border border-[#E8192C]/40 bg-[#E8192C]/10 px-6 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white"
-                  >
-                    <span className="flex items-center gap-2">
-                      <LayoutDashboard size={14} />
-                      My Dashboard
-                    </span>
-                    {trial.trialDay && !trial.trialIsComplete && (
-                      <span className="text-[#E8192C]">
-                        Day {trial.trialDay}/7
+                      <span className="flex items-center gap-2">
+                        <ShieldCheck size={12} />
+                        Admin
                       </span>
-                    )}
-                  </Link>
+                      <span className="text-[#E8192C]">
+                        {trial.role === "super_admin" ? "SUPER" : "ADMIN"}
+                      </span>
+                    </Link>
+                  </motion.div>
                 )}
-                {isAuthenticated ? (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      try {
-                        const stale: string[] = [];
-                        for (let i = 0; i < localStorage.length; i++) {
-                          const k = localStorage.key(i);
-                          if (
-                            k &&
-                            (k.startsWith("sb-") || k.startsWith("brj."))
-                          ) {
-                            stale.push(k);
-                          }
-                        }
-                        stale.forEach((k) => localStorage.removeItem(k));
-                      } catch {
-                        // ignore
-                      }
-                      signOut().catch((err) =>
-                        console.error("[signOut] failed:", err),
-                      );
-                      window.location.assign("/");
+
+                {isAuthenticated && trial.hasTrial && (
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0, y: 15 },
+                      visible: {
+                        opacity: 1,
+                        y: 0,
+                        transition: { duration: 0.4 },
+                      },
                     }}
-                    className="inline-flex items-center self-start border border-[#1c1c1c] px-6 py-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-[#E8192C] hover:text-white"
+                    className="mt-2"
                   >
-                    Sign out
-                  </button>
-                ) : (
-                  <Link
-                    to="/auth/login"
-                    onClick={() => setOpen(false)}
-                    className="inline-flex items-center self-start border border-[#1c1c1c] px-6 py-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/70 transition-colors hover:border-[#E8192C] hover:text-white"
-                  >
-                    Sign in
-                  </Link>
+                    <Link
+                      to="/dashboard"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center justify-between gap-2 rounded-lg bg-[#E8192C]/10 px-4 py-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white transition-all hover:bg-[#E8192C]/15"
+                    >
+                      <span className="flex items-center gap-2">
+                        <LayoutDashboard size={12} />
+                        Dashboard
+                      </span>
+                      {trial.trialDay && !trial.trialIsComplete && (
+                        <span className="text-[#E8192C]">
+                          Day {trial.trialDay}/7
+                        </span>
+                      )}
+                    </Link>
+                  </motion.div>
                 )}
-              </motion.li>
-            </motion.ul>
+              </motion.div>
+            </div>
+
+            {/* Premium Footer */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.6, delay: 0.7 }}
+              className="border-t border-white/5 px-6 py-6"
+            >
+              {isAuthenticated ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setOpen(false);
+                    try {
+                      const stale: string[] = [];
+                      for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        if (
+                          k &&
+                          (k.startsWith("sb-") || k.startsWith("brj."))
+                        ) {
+                          stale.push(k);
+                        }
+                      }
+                      stale.forEach((k) => localStorage.removeItem(k));
+                    } catch {
+                      // ignore
+                    }
+                    signOut().catch((err) =>
+                      console.error("[signOut] failed:", err),
+                    );
+                    window.location.assign("/");
+                  }}
+                  className="flex items-center gap-2 font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/40 transition-colors hover:text-white/70"
+                >
+                  <LogOut size={11} />
+                  Sign out
+                </button>
+              ) : (
+                <Link
+                  to="/auth/login"
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-2 font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/40 transition-colors hover:text-white/70"
+                >
+                  <UserIcon size={11} />
+                  Sign in
+                </Link>
+              )}
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -581,7 +752,10 @@ export default function Navbar() {
             <Link
               to={primaryCta.href}
               onClick={() =>
-                track("cta_click", { event_label: "mobile_sticky_cta", cta: primaryCta.short })
+                track("cta_click", {
+                  event_label: "mobile_sticky_cta",
+                  cta: primaryCta.short,
+                })
               }
               className="flex items-center justify-center bg-[#E8192C] py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white shadow-[0_-6px_24px_rgba(0,0,0,0.5)]"
             >

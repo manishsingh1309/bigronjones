@@ -9,7 +9,11 @@ import BrandName from "@/components/shared/BrandName";
 function withBrand(text: string) {
   const parts = text.split(/(BigRonJones)/g);
   return parts.map((part, i) =>
-    part === "BigRonJones" ? <BrandName key={i} /> : <Fragment key={i}>{part}</Fragment>
+    part === "BigRonJones" ? (
+      <BrandName key={i} />
+    ) : (
+      <Fragment key={i}>{part}</Fragment>
+    ),
   );
 }
 
@@ -59,16 +63,16 @@ const faqs = [
 export default function ConsultPage() {
   return (
     <>
-              <title>Consult | BigRonJones</title>
-        <meta
-          name="description"
-          content="Book a private consultation with Ron or Sean. Direct, personal coaching calls — no fluff, no upsells."
-        />
+      <title>Consult | BigRonJones</title>
+      <meta
+        name="description"
+        content="Book a private consultation with Ron or Sean. Direct, personal coaching calls — no fluff, no upsells."
+      />
       <section className="relative overflow-hidden bg-[#050505] pt-28 pb-12 md:pt-36 md:pb-16">
         <PageHeader
-          eyebrow="BOOK YOUR CALL"
-          headline={["DIRECT ACCESS", "TO THE TEAM."]}
-          sub="60 minutes. 1-on-1. Real expertise — not a script. Pick the call that fits where you are."
+          eyebrow="PRIVATE COACHING CALL"
+          headline={["PRIVATE COACHING", "CALL WITH", "BIGRONJONES®"]}
+          sub="Use this private call to get clear on your starting point, your biggest obstacles, and the best coaching direction for your goals."
         />
       </section>
 
@@ -195,7 +199,8 @@ export default function ConsultPage() {
               className="font-['Bebas_Neue'] leading-[1.05] text-white"
               style={{ fontSize: "clamp(1.75rem, 4.5vw, 3.25rem)" }}
             >
-              &ldquo;A 60-MINUTE CALL CAN SAVE YOU 20 YEARS OF GUESSING. THAT&apos;S WHY WE DO THIS.&rdquo;
+              &ldquo;A 60-MINUTE CALL CAN SAVE YOU 20 YEARS OF GUESSING.
+              THAT&apos;S WHY WE DO THIS.&rdquo;
             </p>
             <footer className="mt-5 font-['DM_Mono'] text-[11px] uppercase tracking-[0.25em] text-white/60">
               — <BrandName />

@@ -102,7 +102,12 @@ export default function Footer() {
           </h2>
           <Link
             to="/programs/trial"
-            onClick={() => track("cta_click", { event_label: "footer_cta", cta: "START NOW" })}
+            onClick={() =>
+              track("cta_click", {
+                event_label: "footer_cta",
+                cta: "START NOW",
+              })
+            }
             className="inline-flex items-center bg-[#E8192C] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f]"
           >
             START NOW
@@ -128,10 +133,9 @@ export default function Footer() {
               </span>
             </Link>
             <p className="font-['DM_Sans'] text-sm italic text-white/60">
-              Practical Advice For Your Real World Goals
-              <sup style={{ fontSize: "0.6em", verticalAlign: "super", lineHeight: 0 }}>
-                ®
-              </sup>
+              Private online strength and wellness coaching for adults 35+
+              through structured training, nutrition support, weekly Zoom
+              oversight, and real accountability.
             </p>
             <a
               href={`mailto:${siteData.contact.email}`}
@@ -164,10 +168,11 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 border-b border-[#1a1a1a] py-12 md:grid-cols-4 md:gap-6">
           <div className="col-span-2 md:col-span-1">
             <h3 className="mb-5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
-              — Stay In Ron&apos;s Loop
+              — Join The List
             </h3>
             <p className="mb-4 font-['DM_Sans'] text-sm leading-relaxed text-white/55">
-              3 fresh posts every morning. No spam. Unsubscribe in one click.
+              Get practical training, nutrition, and wellness guidance for
+              real-world adults who want structure that actually lasts.
             </p>
             <form onSubmit={handleSubscribe} className="flex flex-col gap-2">
               <input
@@ -188,7 +193,7 @@ export default function Footer() {
                 {state === "loading"
                   ? "Joining..."
                   : state === "success"
-                    ? "✓ You're In"
+                    ? "✓ Welcome"
                     : state === "error"
                       ? "Try Again"
                       : "Join Free"}
@@ -243,7 +248,7 @@ export default function Footer() {
             </ul>
           </div>
           <p className="font-['DM_Sans'] text-[13px] italic">
-            No contracts. No gimmicks. Just results.
+            Private Coaching for Adults 35+
           </p>
         </div>
       </div>
