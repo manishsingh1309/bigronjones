@@ -166,10 +166,29 @@ export default async function handler(req: Request): Promise<Response> {
   });
 
   const subject = magnet.email_subject || `Your Free ${magnet.title} from BigRonJones`;
+
+  // For downloadable types (pdf/ebook/file), attach the actual file so it lands
+  // directly in the inbox — not just a link. YouTube/URL types stay link-only.
+  const isFileType =
+    contentType === "pdf" || contentType === "ebook" || contentType === "file";
+  let attachments: Array<{ filename: string; path: string }> | undefined;
+  if (isFileType && deliveryUrl.startsWith("http")) {
+    const ext =
+      deliveryUrl.split("?")[0].match(/\.([a-z0-9]+)$/i)?.[1]?.toLowerCase() ||
+      "pdf";
+    const safeBase =
+      (magnet.title?.trim() || lead_magnet_slug)
+        .replace(/[^\w.\- ]+/g, "")
+        .trim()
+        .replace(/\s+/g, "-") || "your-guide";
+    attachments = [{ filename: `${safeBase}.${ext}`, path: deliveryUrl }];
+  }
+
   let emailSent = false;
   let emailError: string | null = null;
 
-  if (process.env.RESEND_API_KEY) {
+  // Send if any transport is configured (Gmail SMTP preferred, else Resend).
+  if (process.env.GMAIL_USER || process.env.RESEND_API_KEY) {
     const result = await sendEmail({
       to: email,
       subject,
@@ -179,17 +198,18 @@ export default async function handler(req: Request): Promise<Response> {
         "List-Unsubscribe": `<${unsubscribeUrl}>`,
         "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
       },
+      attachments,
     });
     emailSent = result.ok;
     if (!result.ok) {
       emailError = result.detail || result.reason;
-      console.error("[capture-lead] Resend send failed:", emailError);
+      console.error("[capture-lead] email send failed:", emailError);
     }
   } else {
     console.warn(
-      `[capture-lead][DEV] RESEND_API_KEY not set — would send to ${email}: ${deliveryUrl}`
+      `[capture-lead][DEV] No email transport set — would send to ${email}: ${deliveryUrl}`
     );
-    // In dev with no Resend key, treat as sent so the UI flows correctly.
+    // In dev with no transport, treat as sent so the UI flows correctly.
     emailSent = true;
   }
 
