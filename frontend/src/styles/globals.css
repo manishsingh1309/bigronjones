@@ -204,6 +204,64 @@ body {
   animation: shimmer 1.5s infinite;
 }
 
+/* Timeline mobile responsiveness fix */
+@media (max-width: 768px) {
+  /* Hide the center timeline connector line on mobile */
+  ol span[aria-hidden="true"] {
+    display: none !important;
+  }
+
+  /* Single column layout for timeline items */
+  .timeline-item,
+  ol li[class*="grid"] {
+    display: flex !important;
+    flex-direction: column !important;
+    grid-template-columns: none !important;
+    gap: 16px !important;
+    width: 100%;
+    padding-left: 56px;
+  }
+
+  /* Year section takes full width */
+  .timeline-year,
+  ol li > div:first-child,
+  ol li > div:nth-child(2) {
+    width: 100%;
+    flex: none;
+    text-align: left !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  /* Content section takes full width */
+  .timeline-content,
+  ol li > div:last-child {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* Ensure text wrapping and proper line breaks */
+  .timeline-content p,
+  ol li p {
+    white-space: normal !important;
+    word-break: normal;
+    overflow-wrap: break-word;
+    line-height: 1.7;
+    word-spacing: normal;
+  }
+
+  /* Prevent horizontal overflow */
+  body,
+  html {
+    overflow-x: hidden;
+  }
+
+  /* Timeline dot positioning on mobile - keep on left side */
+  ol li span[class*="absolute"] {
+    left: 18px !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

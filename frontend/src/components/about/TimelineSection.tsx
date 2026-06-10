@@ -1,4 +1,3 @@
-
 import { Fragment } from "react";
 import { motion } from "framer-motion";
 import { viewportOnce } from "@/lib/animations";
@@ -50,7 +49,11 @@ const milestones = [
 function withBrand(text: string) {
   const parts = text.split(/(BigRonJones)/g);
   return parts.map((part, i) =>
-    part === "BigRonJones" ? <BrandName key={i} /> : <Fragment key={i}>{part}</Fragment>
+    part === "BigRonJones" ? (
+      <BrandName key={i} />
+    ) : (
+      <Fragment key={i}>{part}</Fragment>
+    ),
   );
 }
 
@@ -106,7 +109,7 @@ export default function TimelineSection() {
                   delay: i * 0.05,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="relative grid grid-cols-[56px_1fr] gap-6 pb-12 md:grid-cols-2 md:gap-12"
+                className="relative flex flex-col gap-4 pb-12 md:grid md:grid-cols-2 md:gap-12 md:flex-row"
               >
                 <span
                   className={`absolute left-[18px] top-2 z-[2] h-4 w-4 -translate-x-px rounded-full border-2 border-[#050505] bg-[#E8192C] md:left-1/2 md:-translate-x-1/2 ${
@@ -116,9 +119,7 @@ export default function TimelineSection() {
 
                 {flip ? <div className="hidden md:block" /> : null}
 
-                <div
-                  className={`md:${flip ? "pl-8 md:text-left" : "pr-8 md:text-right"}`}
-                >
+                <div className="w-full">
                   <p className="font-['Bebas_Neue'] text-4xl leading-none tracking-wide text-[#E8192C]">
                     {m.year}
                   </p>
