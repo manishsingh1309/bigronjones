@@ -55,6 +55,17 @@ export default function HeroSection() {
             on the right without a muddy band crossing his face. */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#050505_0%,rgba(5,5,5,0.92)_22%,rgba(5,5,5,0.55)_48%,rgba(5,5,5,0.18)_72%,rgba(5,5,5,0.05)_100%)]" />
 
+        {/* Mobile-only readability scrim — desktop relies on the horizontal
+            gradient above; on phones Ron sits behind the centered text, so a
+            soft vertical scrim keeps the headline + CTAs legible while he
+            still reads through clearly. */}
+        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_bottom,rgba(5,5,5,0.38)_0%,rgba(5,5,5,0.06)_32%,rgba(5,5,5,0.18)_58%,rgba(5,5,5,0.82)_90%,#050505_100%)]" />
+
+        {/* Mobile-only horizontal scrim — darkens the text column on the left so
+            the eyebrow + headline stay crisp and never collide with Ron's face,
+            which sits in the clear right third. */}
+        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_right,#050505_0%,rgba(5,5,5,0.92)_40%,rgba(5,5,5,0.5)_60%,rgba(5,5,5,0.1)_82%,transparent_100%)]" />
+
         {/* Bottom fade into next section */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
 
@@ -188,7 +199,7 @@ export default function HeroSection() {
                   event_label: "hero_secondary_cta",
                 })
               }
-              className="border border-[#1c1c1c] px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white/80 transition-colors hover:border-[#E8192C] hover:text-white"
+              className="border border-white/70 bg-white/5 px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white backdrop-blur-sm transition-colors hover:border-white hover:bg-white hover:text-[#050505]"
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
             >

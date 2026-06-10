@@ -13,7 +13,7 @@ export default function SplineSection() {
     <section
       ref={ref}
       aria-label="Built Different"
-      className="relative overflow-hidden border-y border-[#1a1a1a] bg-[#050505]"
+      className="relative hidden overflow-hidden border-y border-[#1a1a1a] bg-[#050505] lg:block"
       style={{ minHeight: "580px" }}
     >
       {/* Subtle crimson glow on the left */}

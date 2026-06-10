@@ -9,14 +9,14 @@ import { viewportOnce } from "@/lib/animations";
 
 export default function ProgramsSection() {
   return (
-    <section id="programs" className="bg-[#050505] py-24 md:py-32">
+    <section id="programs" className="bg-[#050505] pt-12 pb-24 md:py-32">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <motion.header
           initial="hidden"
           whileInView="visible"
           viewport={viewportOnce}
           variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="mb-14 max-w-3xl"
+          className="mb-14 hidden max-w-3xl md:block"
         >
           <motion.p
             variants={{
@@ -177,8 +177,9 @@ function ProgramCard({ program: p, index: i }: ProgramCardProps) {
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/40 to-[#0f0f0f]/10" />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f0f] to-transparent" />
 
-        {/* Badge */}
-        <span className="absolute right-4 top-4 bg-[#E8192C] px-3 py-1.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white">
+        {/* Badge — hidden on mobile (it overlaps the subject's face on small
+            cards); shown from md up where the card is wider. */}
+        <span className="absolute right-4 top-4 hidden bg-[#E8192C] px-3 py-1.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white md:block">
           {p.badge}
         </span>
       </div>

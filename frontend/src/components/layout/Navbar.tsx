@@ -141,9 +141,16 @@ export default function Navbar() {
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-20 md:px-10">
           <Link
             to="/"
-            className="flex items-center"
+            className="flex items-center gap-2.5 sm:gap-3"
             aria-label="BigRonJones home"
           >
+            {/* Brand avatar — circular Ron headshot, LEFT of the wordmark */}
+            <img
+              src="/images/ron/bigronjones.jpg"
+              alt="Big Ron Jones"
+              className="h-8 w-8 select-none rounded-full border border-[#E8192C]/60 object-cover object-center sm:h-9 sm:w-9 md:h-10 md:w-10"
+              draggable={false}
+            />
             <img
               src="/assets/bigronjones-logo.png"
               alt="BIGRONJONES®"
@@ -448,9 +455,15 @@ export default function Navbar() {
               <Link
                 to="/"
                 onClick={() => setOpen(false)}
-                className="flex items-center"
+                className="flex items-center gap-2.5"
                 aria-label="BigRonJones home"
               >
+                <img
+                  src="/images/ron/bigronjones.jpg"
+                  alt="Big Ron Jones"
+                  className="h-9 w-9 select-none rounded-full border border-[#E8192C]/60 object-cover object-center"
+                  draggable={false}
+                />
                 <img
                   src="/assets/bigronjones-logo.png"
                   alt="BIGRONJONES®"
@@ -482,9 +495,9 @@ export default function Navbar() {
                     },
                   },
                 }}
-                className="flex-1 px-6 py-12"
+                className="flex-1 px-6 py-8"
               >
-                <ul className="flex flex-col gap-y-8">
+                <ul className="flex flex-col gap-y-5">
                   {navLinks.map((item) => {
                     const active = isActive(item.href);
                     return (
@@ -514,7 +527,7 @@ export default function Navbar() {
                           >
                             <span
                               className={cn(
-                                "block font-['Bebas_Neue'] text-[34px] font-bold leading-[1.05] tracking-tight transition-all duration-300",
+                                "block font-['Bebas_Neue'] text-2xl font-bold leading-[1.05] tracking-tight transition-all duration-300",
                                 active
                                   ? "text-[#E8192C]"
                                   : "text-white hover:text-white",

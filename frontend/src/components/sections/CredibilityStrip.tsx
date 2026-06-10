@@ -38,7 +38,7 @@ const credibilityPoints = [
 
 export default function CredibilityStrip() {
   return (
-    <section className="relative bg-[#050505] py-12 md:py-16">
+    <section className="relative hidden bg-[#050505] py-12 md:block md:py-16">
       <div className="mx-auto max-w-[1400px] px-6 md:px-10">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
           {credibilityPoints.map(({ icon: Icon, label }, i) => (

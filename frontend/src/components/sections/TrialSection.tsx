@@ -27,7 +27,7 @@ export default function TrialSection() {
   return (
     <section
       id="trial"
-      className="relative overflow-hidden bg-[#0a0a0a] py-24 md:py-32"
+      className="relative hidden overflow-hidden bg-[#0a0a0a] py-24 md:block md:py-32"
     >
       <div
         aria-hidden

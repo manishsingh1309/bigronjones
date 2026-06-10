@@ -1,6 +1,6 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Check, ArrowRight, ChevronLeft } from "lucide-react";
-import { programs, getProgramBySlug } from "@/data/programs";
+import { programs, getProgramBySlug, type ProgramDetail } from "@/data/programs";
 import ProgramSpotlightCard from "@/components/shared/ProgramSpotlightCard";
 import { testimonials } from "@/data/testimonials";
 
@@ -18,7 +18,15 @@ export default function ProgramDetailPage() {
   const programTestimonials = testimonials
     .filter((t) => t.filter === filterMap[program.slug])
     .slice(0, 3);
-  const related = programs.filter((p) => p.slug !== program.slug);
+  // "Explore the rest" cross-sell. Each coaching page (mens/womens) features
+  // its own gendered program alongside the 7-Day Trial; the Trial page features
+  // the two coaching programs.
+  const related: ProgramDetail[] =
+    program.slug === "trial"
+      ? programs.filter((p) => p.slug !== "trial")
+      : [getProgramBySlug("trial"), program].filter(
+          (p): p is ProgramDetail => p !== undefined,
+        );
 
   return (
     <>

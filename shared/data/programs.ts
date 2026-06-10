@@ -130,7 +130,7 @@ export const programs: ProgramDetail[] = [
     cta: "Apply to Join",
     ctaLink: "/apply?program=womens",
     featured: false,
-    image: "/images/programs/womens-wellness.png",
+    image: "/images/programs/bigronjones-61.jpg",
   },
 ];
 
