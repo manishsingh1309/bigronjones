@@ -141,6 +141,7 @@ export default function Navbar() {
         <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-6 md:h-20 md:px-10">
           <Link
             to="/"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             className="flex items-center gap-2.5 sm:gap-3"
             aria-label="BigRonJones home"
           >
@@ -454,7 +455,10 @@ export default function Navbar() {
             <div className="flex h-20 items-center justify-between border-b border-white/5 px-6">
               <Link
                 to="/"
-                onClick={() => setOpen(false)}
+                onClick={() => {
+                  setOpen(false);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
                 className="flex items-center gap-2.5"
                 aria-label="BigRonJones home"
               >

@@ -33,7 +33,7 @@ export default function HeroSection() {
     <section
       id="home"
       ref={sectionRef}
-      className="relative flex min-h-screen w-full items-center overflow-hidden bg-[#050505]"
+      className="relative flex min-h-screen w-full items-end overflow-hidden bg-[#050505] md:items-center"
     >
       {/* ══ HERO BACKGROUND — SVG opener image (full-bleed) ══ */}
       <motion.div
@@ -55,16 +55,11 @@ export default function HeroSection() {
             on the right without a muddy band crossing his face. */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#050505_0%,rgba(5,5,5,0.92)_22%,rgba(5,5,5,0.55)_48%,rgba(5,5,5,0.18)_72%,rgba(5,5,5,0.05)_100%)]" />
 
-        {/* Mobile-only readability scrim — desktop relies on the horizontal
-            gradient above; on phones Ron sits behind the centered text, so a
-            soft vertical scrim keeps the headline + CTAs legible while he
-            still reads through clearly. */}
-        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_bottom,rgba(5,5,5,0.38)_0%,rgba(5,5,5,0.06)_32%,rgba(5,5,5,0.18)_58%,rgba(5,5,5,0.82)_90%,#050505_100%)]" />
-
-        {/* Mobile-only horizontal scrim — darkens the text column on the left so
-            the eyebrow + headline stay crisp and never collide with Ron's face,
-            which sits in the clear right third. */}
-        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_right,#050505_0%,rgba(5,5,5,0.92)_40%,rgba(5,5,5,0.5)_60%,rgba(5,5,5,0.1)_82%,transparent_100%)]" />
+        {/* Mobile-only scrim — on phones the layout flips to "photo on top,
+            text on the bottom": Ron's face/upper body stays bright in the clear
+            top half while a strong bottom gradient grounds the headline + CTAs,
+            keeping text entirely off his face. */}
+        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_bottom,transparent_0%,rgba(5,5,5,0.04)_30%,rgba(5,5,5,0.42)_50%,rgba(5,5,5,0.88)_72%,#050505_100%)]" />
 
         {/* Bottom fade into next section */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
@@ -96,7 +91,7 @@ export default function HeroSection() {
       {/* ══ LEFT COLUMN — TEXT ══ */}
       <motion.div
         style={{ willChange: "opacity, transform" }}
-        className="relative z-20 mx-auto w-full max-w-[1400px] px-5 pb-16 pt-28 sm:px-6 md:px-10 md:pt-36"
+        className="relative z-20 mx-auto w-full max-w-[1400px] px-5 pb-12 pt-28 sm:px-6 md:px-10 md:pb-16 md:pt-36"
       >
         <div className="max-w-[720px]">
           {/* Brand badge */}
@@ -152,7 +147,7 @@ export default function HeroSection() {
 
           {/* Body paragraph */}
           <motion.p
-            className="mt-6 max-w-[620px] font-['DM_Sans'] text-base leading-[1.75] text-white/65"
+            className="mt-6 hidden max-w-[620px] font-['DM_Sans'] text-base leading-[1.75] text-white/65 md:block"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 2.05 }}
@@ -245,9 +240,10 @@ export default function HeroSection() {
         ))}
       </motion.aside>
 
-      {/* ══ SCROLL INDICATOR ══ */}
+      {/* ══ SCROLL INDICATOR ══ (desktop only — would collide with the
+          bottom-anchored hero text on mobile) */}
       <motion.div
-        className="absolute bottom-8 left-1/2 z-30 flex -translate-x-1/2 flex-col items-center gap-2"
+        className="absolute bottom-8 left-1/2 z-30 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.8, duration: 0.8 }}

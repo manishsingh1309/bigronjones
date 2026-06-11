@@ -119,11 +119,12 @@ body {
   }
 }
 @media (max-width: 768px) {
-  /* On phones the container is far taller than the 16:9 opener, so bg-cover
-     shows the full image height and only a narrow horizontal slice. Anchor to
-     ~62% so Ron stays in frame (30% pushed him off-screen right). */
+  /* On phones the layout flips to "photo on top, text on the bottom". The
+     container is far taller than the 16:9 opener, so bg-cover shows the full
+     image height and a narrow horizontal slice — anchor to 80% to centre Ron's
+     face + upper body in the clear top half (not cut off on the right edge). */
   .hero-opener-bg {
-    background-position: 70% center;
+    background-position: 80% center;
   }
 }
 
