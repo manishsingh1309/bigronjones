@@ -1,5 +1,6 @@
 
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { viewportOnce } from "@/lib/animations";
 import { track } from "@/lib/track";
 
@@ -66,20 +67,20 @@ export default function CTASection() {
           variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0, transition: { duration: 0.7 } } }}
           className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row"
         >
-          <a
-            href="/programs/trial"
+          <Link
+            to="/programs/trial"
             onClick={() => track("trial_start_click", { event_label: "final_cta" })}
-            className="inline-flex items-center bg-[#E8192C] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f]"
+            className="inline-flex w-full items-center justify-center bg-[#E8192C] px-8 py-4 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-all hover:scale-105 hover:bg-[#b50f1f] sm:w-auto md:px-10 md:py-5"
           >
             START MY 7 DAY TRIAL
-          </a>
-          <a
-            href="/apply"
+          </Link>
+          <Link
+            to="/apply"
             onClick={() => track("apply_click", { event_label: "final_cta" })}
-            className="inline-flex items-center border border-[#1c1c1c] px-10 py-5 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-colors hover:border-[#E8192C]"
+            className="inline-flex w-full items-center justify-center border border-[#1c1c1c] px-8 py-4 font-['Bebas_Neue'] text-xl tracking-[0.15em] text-white transition-colors hover:border-[#E8192C] sm:w-auto md:px-10 md:py-5"
           >
             APPLY FOR FULL COACHING
-          </a>
+          </Link>
         </motion.div>
 
         <motion.p

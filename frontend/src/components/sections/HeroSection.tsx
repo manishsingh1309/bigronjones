@@ -15,17 +15,41 @@
  */
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { X } from "lucide-react";
 import { siteData } from "@/data/site";
 import { track } from "@/lib/track";
+
+// Animated internal link — same hover/tap feel as the primary CTA but routes
+// client-side (a plain <a href> would hard-reload the whole SPA).
+const MotionLink = motion.create(Link);
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null);
   const [mounted, setMounted] = useState(false);
+  // "Apply for coaching" opens a chooser so the visitor picks their path
+  // (men's / women's funnel, or the 7-day trial) rather than a generic form.
+  const [chooserOpen, setChooserOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Close the chooser on Escape; lock body scroll while it's open.
+  useEffect(() => {
+    if (!chooserOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setChooserOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [chooserOpen]);
 
   const { tagline, lines, description } = siteData.hero;
 
@@ -43,10 +67,14 @@ export default function HeroSection() {
         transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
         style={{ willChange: "transform, opacity" }}
       >
+        {/* Hero photo — the same portrait shot on desktop + mobile, framed per
+            breakpoint via the .hero-home class. Swap the file at
+            /images/ron/hero-home.png to change it (the ?v= bumps the cache so a
+            new file shows without a hard refresh). */}
         <div
-          className="absolute inset-0 w-full h-full bg-cover bg-no-repeat hero-opener-bg"
+          className="absolute inset-0 h-full w-full bg-cover bg-no-repeat hero-home"
           style={{
-            backgroundImage: "url('/assets/hero-opener.svg')",
+            backgroundImage: "url('/images/ron/hero-home.png?v=2')",
           }}
         />
 
@@ -168,11 +196,12 @@ export default function HeroSection() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            <motion.a
-              href="/apply"
-              onClick={() =>
-                track("apply_click", { event_label: "hero_primary_cta" })
-              }
+            <motion.button
+              type="button"
+              onClick={() => {
+                track("apply_click", { event_label: "hero_primary_cta" });
+                setChooserOpen(true);
+              }}
               className="group relative overflow-hidden bg-[#E8192C] px-8 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.15em] text-white"
               whileHover={{ scale: 1.04, backgroundColor: "#b50f1f" }}
               whileTap={{ scale: 0.97 }}
@@ -185,10 +214,10 @@ export default function HeroSection() {
                 whileHover={{ x: "120%" }}
                 transition={{ duration: 0.55 }}
               />
-            </motion.a>
+            </motion.button>
 
-            <motion.a
-              href="/programs/trial"
+            <MotionLink
+              to="/programs/trial"
               onClick={() =>
                 track("trial_start_click", {
                   event_label: "hero_secondary_cta",
@@ -199,7 +228,7 @@ export default function HeroSection() {
               whileTap={{ scale: 0.97 }}
             >
               Start 7-Day Trial
-            </motion.a>
+            </MotionLink>
           </motion.div>
 
           {/* Trust line */}
@@ -261,6 +290,116 @@ export default function HeroSection() {
 
       {/* Bottom vignette for clean handoff to marquee */}
       <div className="pointer-events-none absolute bottom-0 left-0 right-0 z-20 h-32 bg-gradient-to-t from-[#050505] to-transparent" />
+
+      {/* ══ APPLY CHOOSER ══ — three coaching paths */}
+      <AnimatePresence>
+        {chooserOpen && (
+          <motion.div
+            className="fixed inset-0 z-[120] flex items-center justify-center p-5"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Choose your coaching path"
+          >
+            <div
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+              onClick={() => setChooserOpen(false)}
+            />
+            <motion.div
+              className="relative w-full max-w-md border border-[#1a1a1a] bg-[#0d0d0d] p-6 sm:p-8"
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.97, y: 10 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <button
+                type="button"
+                onClick={() => setChooserOpen(false)}
+                aria-label="Close"
+                className="absolute right-4 top-4 text-white/50 transition-colors hover:text-white"
+              >
+                <X size={20} />
+              </button>
+              <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
+                — Choose Your Path
+              </p>
+              <h3 className="mt-2 font-['Bebas_Neue'] text-3xl leading-none text-white sm:text-4xl">
+                WHICH FITS YOU?
+              </h3>
+              <p className="mt-3 text-sm leading-relaxed text-white/55">
+                Pick the program that matches where you are. Not sure? Start
+                with the 7-day trial.
+              </p>
+
+              <div className="mt-6 flex flex-col gap-3">
+                <a
+                  href="https://thebigronjones.com/fitnessalliance"
+                  onClick={() =>
+                    track("apply_click", { event_label: "chooser_mens" })
+                  }
+                  className="group flex items-center justify-between gap-3 border border-[#1a1a1a] bg-black/40 px-5 py-4 transition-colors hover:border-[#E8192C] hover:bg-[#E8192C]/[0.06]"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-['Bebas_Neue'] text-xl leading-none tracking-wide text-white">
+                      Men&apos;s Fitness Alliance
+                    </span>
+                    <span className="mt-1 block font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/40">
+                      Private coaching for men 35+
+                    </span>
+                  </span>
+                  <span className="text-lg text-[#E8192C] transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </a>
+
+                <a
+                  href="https://thebigronjones.com/womenaccountability"
+                  onClick={() =>
+                    track("apply_click", { event_label: "chooser_womens" })
+                  }
+                  className="group flex items-center justify-between gap-3 border border-[#1a1a1a] bg-black/40 px-5 py-4 transition-colors hover:border-[#E8192C] hover:bg-[#E8192C]/[0.06]"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-['Bebas_Neue'] text-xl leading-none tracking-wide text-white">
+                      Women&apos;s Wellness Program
+                    </span>
+                    <span className="mt-1 block font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/40">
+                      Private coaching for women 35+
+                    </span>
+                  </span>
+                  <span className="text-lg text-[#E8192C] transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </a>
+
+                <Link
+                  to="/programs/trial"
+                  onClick={() => {
+                    track("trial_start_click", { event_label: "chooser_trial" });
+                    setChooserOpen(false);
+                  }}
+                  className="group flex items-center justify-between gap-3 border border-[#1a1a1a] bg-black/40 px-5 py-4 transition-colors hover:border-[#E8192C] hover:bg-[#E8192C]/[0.06]"
+                >
+                  <span className="min-w-0">
+                    <span className="block font-['Bebas_Neue'] text-xl leading-none tracking-wide text-white">
+                      Not Sure / Start with the 7-Day Trial
+                    </span>
+                    <span className="mt-1 block font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/40">
+                      The lowest-risk first step
+                    </span>
+                  </span>
+                  <span className="text-lg text-[#E8192C] transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

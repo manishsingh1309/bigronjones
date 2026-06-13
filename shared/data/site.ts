@@ -68,8 +68,8 @@ export const siteData = {
       cta: "APPLY FOR MEN'S COACHING",
       featured: true,
       image: "/images/programs/mens-fitness-alliance.png",
-      imagePosition: "object-center",
-      href: "/apply?program=mens",
+      imagePosition: "object-top",
+      href: "https://thebigronjones.com/fitnessalliance",
     },
     {
       badge: "WOMEN'S COACHING",
@@ -92,7 +92,7 @@ export const siteData = {
       // Ron (left) + client (right) both have their faces in the top of the
       // frame, so anchor the crop to the top to keep both visible.
       imagePosition: "object-top",
-      href: "/apply?program=womens",
+      href: "https://thebigronjones.com/womenaccountability",
     },
     {
       badge: "ENTRY POINT",
@@ -111,7 +111,7 @@ export const siteData = {
       cta: "START YOUR TRIAL",
       featured: true,
       image: "/images/programs/oversight-trial.png",
-      imagePosition: "object-center",
+      imagePosition: "object-top",
       href: "/programs/trial",
     },
   ],

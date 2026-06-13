@@ -34,7 +34,7 @@ export const team: TeamMember[] = [
       "BigRonJones has spent over 20 years helping real people cut through the noise of fitness culture. No gimmicks, no unachievable standards. Whether you're a working dad, a rebuilding mom, or anyone over 35 ready to stop settling — BigRonJones' programs meet you exactly where you are. The approach is simple: practical methods, real-world goals, proven results. No perfection. Just progress, consistency, and the kind of accountability that actually moves the needle.",
     quote:
       "No perfect life required. Show up, stay consistent, and the progress follows.",
-    image: "/images/team/ron.png",
+    image: "/images/team/ron-founder.png",
     credentials: [
       "20+ Years Coaching",
       "2,000+ Clients Coached",

@@ -82,7 +82,7 @@ export const products: Product[] = [
       "Follow-up summary sent after call",
       "Discounted rate on programs after consult",
     ],
-    image: "/images/consult/private-call-with-ron.jpg",
+    image: "/images/consult/coaching-call-ron.png",
     coach: "BigRonJones",
     duration: "60 minutes",
     cta: "Book with BigRonJones",

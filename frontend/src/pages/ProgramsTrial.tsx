@@ -28,77 +28,77 @@ const FEATURE_CARDS = [
   {
     icon: PlayCircle,
     title: "7 Daily Training Videos",
-    body: "Gym and home 4-day programs built for adults 35+. No fluff.",
+    body: "Clear video-guided training with gym and home options built for adults 35+.",
   },
   {
     icon: Calendar,
-    title: "1:1 Discovery Call",
-    body: "Ron sets your baseline before Day 1. Direct, honest, focused.",
+    title: "Private Starting Call",
+    body: "Meet 1:1 with BigRonJones® to establish your baseline, schedule, goals, and expectations before Day 1 begins.",
   },
   {
     icon: Activity,
     title: "Daily Check-In Dashboard",
-    body: "Sleep, soreness, energy, mood. Tracked daily, reviewed by Ron.",
+    body: "Track sleep, soreness, energy, mood, and performance so BigRonJones® can review your patterns with real context.",
   },
   {
     icon: ShieldCheck,
-    title: "Final Review Call on Day 7",
-    body: "1:1 to analyze patterns, gaps, and what comes next. Clarity, delivered.",
+    title: "Private Final Review Call",
+    body: "Meet 1:1 with BigRonJones® to review your patterns, identify gaps, and discuss the best next step.",
   },
 ];
 
 const STEPS = [
   {
     num: "01",
-    title: "Entry",
-    body: "$149 commitment filters for serious buyers.",
+    title: "Start Your Trial",
+    body: "Secure your 7-day oversight experience with one simple payment.",
   },
   {
     num: "02",
-    title: "Immediate Action",
-    body: "Book your 1:1 Zoom. Baseline, expectations, control.",
+    title: "Book Your Starting Call",
+    body: "Schedule your private 1:1 Zoom with BigRonJones® so your baseline, goals, and expectations are clear before you begin.",
   },
   {
     num: "03",
     title: "Onboarding",
-    body: "Keys to Success, dashboard walkthrough, weekly expectations. Low friction.",
+    body: "Receive your Keys to Success, dashboard walkthrough, and clear expectations for the week.",
   },
   {
     num: "04",
-    title: "Education",
-    body: "Three core videos: Cardio, Strength, Recovery. The system anchored.",
+    title: "Core Education",
+    body: "Watch three short videos covering cardio, strength, and recovery so you understand the foundation before you train.",
   },
   {
     num: "05",
     title: "Training Access",
-    body: "Gym and home 4-day programs. Built for adults 35+ with real schedules.",
+    body: "Access gym and home training options built for adults 35+ with real schedules and real responsibilities.",
   },
   {
     num: "06",
     title: "Daily Tracking",
-    body: "Mood, energy, performance. Optional weight, waist. Dashboard stays simple.",
+    body: "Track mood, energy, sleep, soreness, and performance daily. Weight and waist tracking are optional.",
   },
   {
     num: "07",
     title: "Email Guidance",
-    body: "5 emails across 7 days. Reinforce structure. Keep engagement high.",
+    body: "Receive simple guidance throughout the week to reinforce structure and keep you moving.",
   },
   {
     num: "08",
-    title: "Final Review",
-    body: "1:1 Zoom: patterns, gaps, strengths. Where clarity is delivered.",
+    title: "Final Review Call",
+    body: "Meet privately with BigRonJones® to review your patterns, strengths, gaps, and next best step.",
   },
   {
     num: "09",
-    title: "Conversion Point",
-    body: "Decide on the 180-day program. Sean G and Dr. Shelia as added value.",
+    title: "Next Step Decision",
+    body: "Decide whether the full 24-week coaching program is the right fit, with nutrition support from Sean and wellness insight from Dr. Shelia available inside the full program.",
   },
 ];
 
 const FAQ = [
   {
     q: "What happens immediately after I pay?",
-    a: "You're sent to a confirmation page where you book your 1:1 discovery call with Ron via Calendly. Your trial does not start until that call is booked — that's the structure.",
+    a: "You're sent to a confirmation page where you book your private starting call with BigRonJones® via Calendly. Your trial does not start until that call is booked — that's the structure.",
   },
   {
     q: "Do I need a gym?",
@@ -110,7 +110,7 @@ const FAQ = [
   },
   {
     q: "What happens at the end of Day 7?",
-    a: "You complete a final review call with Ron. He reviews your dashboard, your daily metrics, and your video lessons. You decide together whether the 180-day program is the right next step.",
+    a: "You complete a final review call with Ron. He reviews your dashboard, your daily metrics, and your video lessons. You decide together whether the full 24-week program is the right next step.",
   },
   {
     q: "Who else is on the team?",
@@ -130,13 +130,13 @@ const PROGRAM_DETAILS: Record<Program, { label: string; tagline: string }> = {
 };
 
 const FEATURE_CHECK = [
-  "1:1 Discovery Call with Ron",
+  "Private starting call with BigRonJones®",
   "7-day daily training (gym & home)",
   "Daily check-in dashboard",
   "Sleep, soreness, energy, mood tracking",
-  "5 personalized email touchpoints",
-  "1:1 Final Review Call on Day 7",
-  "Direct path to 180-day continuation",
+  "Simple email guidance across the week",
+  "Private final review call on Day 7",
+  "Direct path to the full 24-week program",
 ];
 
 export default function ProgramsTrial() {
@@ -315,9 +315,9 @@ export default function ProgramsTrial() {
         />
         <div className="relative">
           <PageHeader
-            eyebrow="ENTRY POINT"
-            headline={["NOT READY FOR", "FULL COACHING YET?"]}
-            sub="Start with 7 days of structure, daily tracking, training direction, and two private 1:1 Zoom calls with BigRonJones® before you decide your next step."
+            eyebrow="START HERE"
+            headline={["7-DAY OVERSIGHT", "TRIAL"]}
+            sub="A 7-day coaching experience for adults 35+ who want structure, training direction, daily tracking, and two private 1:1 Zoom calls with BigRonJones®."
             align="center"
           />
           <div className="mx-auto mt-12 flex max-w-3xl flex-col items-center gap-3 px-6">
@@ -383,13 +383,12 @@ export default function ProgramsTrial() {
               <h2 className="font-['Bebas_Neue'] text-5xl leading-none sm:text-6xl">
                 NINE STEPS.
                 <br />
-                ZERO GUESSING.
+                CLEAR DIRECTION.
               </h2>
             </div>
             <p className="max-w-xl text-[15px] leading-relaxed text-white/55">
-              Every step is engineered. Entry filters serious buyers. Onboarding
-              sets baseline. Daily tracking gives Ron real signal. The final
-              review delivers clarity. No fluff between.
+              Every step is built to help you start with structure, stay
+              accountable, track what matters, and finish the week with clarity.
             </p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

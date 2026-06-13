@@ -1,6 +1,29 @@
 
+import { Fragment } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/cn";
+
+// Render ® / ™ as small raised superscripts so they don't render at full size
+// on the baseline of a large Bebas headline (e.g. "BIGRONJONES®").
+function withTrademarkMarks(text: string) {
+  return text.split(/([®™])/).map((part, i) =>
+    part === "®" || part === "™" ? (
+      <sup
+        key={i}
+        style={{
+          fontSize: "0.4em",
+          verticalAlign: "super",
+          lineHeight: 0,
+          marginLeft: "0.04em",
+        }}
+      >
+        {part}
+      </sup>
+    ) : (
+      <Fragment key={i}>{part}</Fragment>
+    ),
+  );
+}
 
 interface PageHeaderProps {
   eyebrow: string;
@@ -42,8 +65,7 @@ export default function PageHeader({
           <div key={`${line}-${i}`} className="overflow-hidden">
             <motion.h1
               initial={{ y: "105%" }}
-              whileInView={{ y: 0 }}
-              viewport={{ once: true, margin: "-80px" }}
+              animate={{ y: 0 }}
               transition={{
                 duration: 0.85,
                 delay: 0.15 + i * 0.1,
@@ -60,7 +82,7 @@ export default function PageHeader({
                     : "clamp(2.25rem, 6.5vw, 5.5rem)",
               }}
             >
-              {line}
+              {withTrademarkMarks(line)}
             </motion.h1>
           </div>
         ))}

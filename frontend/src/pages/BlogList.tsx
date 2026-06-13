@@ -102,7 +102,7 @@ export default function BlogListingPage() {
           </div>
         </section>
 
-        <div className="sticky top-[64px] z-30 border-b border-white/5 bg-[#111111] py-4">
+        <div className="sticky top-[92px] z-30 border-b border-white/5 bg-[#111111] py-4 md:top-[108px]">
           <div className="mx-auto max-w-7xl px-6">
             <BlogFilters
               activeCategory={category}

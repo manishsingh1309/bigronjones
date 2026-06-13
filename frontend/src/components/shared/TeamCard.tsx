@@ -30,7 +30,7 @@ export default function TeamCard({ member, index = 0, variant = "compact" }: Pro
             viewport={{ once: true, margin: "-100px" }}
             transition={{ duration: 1, ease: [0.76, 0, 0.24, 1], delay: 0.15 }}
           />
-          <img src={member.image} alt={member.name} className="object-cover object-top transition-transform duration-1000 group-hover:scale-[1.03]" />
+          <img src={member.image} alt={member.name} className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-1000 group-hover:scale-[1.03]" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-transparent to-transparent" />
         </div>
 
@@ -85,7 +85,7 @@ export default function TeamCard({ member, index = 0, variant = "compact" }: Pro
     >
       <CursorSpotlight size={280} color="rgba(232,25,44,0.16)" />
       <div className="relative h-[320px] overflow-hidden">
-        <img src={member.image} alt={member.name} className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]" />
+        <img src={member.image} alt={member.name} className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.04]" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-[#0f0f0f]/30 to-transparent" />
       </div>
 

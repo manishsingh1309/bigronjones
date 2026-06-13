@@ -40,8 +40,8 @@ const PROGRAM: Day[] = [
     keyPoints: [
       "Watch today's lesson video in full",
       "Open Day 1 of the Gym or Home workout playlist",
-      "Write your Day 1 check-in note to complete the day",
-      "Leave your review at the bottom — Ron reads it directly",
+      "Rate your six daily metrics to complete the day",
+      "Leave a note for Ron at the bottom — he reads it directly",
     ],
     lessonVideoId: "90-COQ3d0mQ",
   },
@@ -54,8 +54,8 @@ const PROGRAM: Day[] = [
     keyPoints: [
       "Watch the Day 2 lesson",
       "Run today's workout from the Gym or Home playlist",
-      "Daily check-in",
-      "Drop your honest review — what landed, what didn't",
+      "Rate your six daily metrics",
+      "Drop your honest note — what landed, what didn't",
     ],
     lessonVideoId: "KGiKfgMHgiM",
   },
@@ -68,8 +68,8 @@ const PROGRAM: Day[] = [
     keyPoints: [
       "Lesson video",
       "Today's strength session from the workout playlist",
-      "Daily check-in",
-      "Review the day",
+      "Rate your six daily metrics",
+      "Note for Ron",
     ],
     lessonVideoId: "KwoI0SgTJzY",
   },
@@ -82,8 +82,8 @@ const PROGRAM: Day[] = [
     keyPoints: [
       "Watch today's recovery lesson",
       "Mobility flow from the playlist",
-      "Daily check-in (be honest about sleep)",
-      "Review — anything you want Ron to see",
+      "Rate your six daily metrics (be honest about sleep)",
+      "Note for Ron",
     ],
     lessonVideoId: "fGZx__eem7I",
   },
@@ -96,8 +96,8 @@ const PROGRAM: Day[] = [
     keyPoints: [
       "Lesson video",
       "Today's workout session",
-      "Daily check-in",
-      "Review the day for Ron",
+      "Rate your six daily metrics",
+      "Note for Ron",
     ],
     lessonVideoId: "1NJgQ5Hz2Yk",
   },
@@ -110,8 +110,8 @@ const PROGRAM: Day[] = [
     keyPoints: [
       "Lesson video",
       "Conditioning workout from the playlist",
-      "Daily check-in",
-      "Drop your review",
+      "Rate your six daily metrics",
+      "Drop your note",
     ],
     lessonVideoId: "M-hR9CDcQng",
   },
@@ -120,11 +120,11 @@ const PROGRAM: Day[] = [
     title: "Day 7 — Review & The Path Forward",
     focus: "Review · Continuation",
     description:
-      "Final lesson. Bring your check-ins and reviews to the Day 7 review call — Ron uses them to plan what comes next.",
+      "Final lesson. Bring your metrics and notes to the Day 7 review call — Ron uses them to plan what comes next.",
     keyPoints: [
       "Watch the final lesson",
       "Light movement from the playlist",
-      "Submit your final daily check-in",
+      "Submit your final daily metrics",
       "Show up to your Day 7 review call",
     ],
     lessonVideoId: "yTAPv6f8FfU",
@@ -134,11 +134,43 @@ const PROGRAM: Day[] = [
 const GYM_PLAYLIST_ID = "PLbxZT1M57opMuU9QVklq2OLKkC-CQzpgI";
 const HOME_PLAYLIST_ID = "PLbxZT1M57opO9ejTUnnhHo0wivaXUqSCq";
 
-type Section = "today" | "modules" | "workouts" | "checkin" | "history";
+type Section = "today" | "modules" | "workouts" | "history";
 
-type CheckIn = {
+// The six recovery metrics the user rates 1-5 after each day's lesson. The
+// keys map to <name>Rating fields on POST /api/day-complete.
+const METRICS = [
+  { key: "energy", label: "Energy", hint: "How energized did you feel today?" },
+  { key: "mood", label: "Mood", hint: "Your overall mood today" },
+  { key: "libido", label: "Libido", hint: "Drive and vitality" },
+  {
+    key: "performance",
+    label: "Performance",
+    hint: "How your training session went",
+  },
+  { key: "sleep", label: "Sleep", hint: "Quality of last night's sleep" },
+  {
+    key: "rhr",
+    label: "RHR",
+    hint: "Resting heart rate — how recovered you feel",
+  },
+] as const;
+
+type MetricKey = (typeof METRICS)[number]["key"];
+type Ratings = Record<MetricKey, number>; // 0 = not yet rated
+
+const EMPTY_RATINGS: Ratings = {
+  energy: 0,
+  mood: 0,
+  libido: 0,
+  performance: 0,
+  sleep: 0,
+  rhr: 0,
+};
+
+type Completion = {
   trialDay: number;
-  feedback: string;
+  ratings: Partial<Ratings>;
+  feedback?: string;
   createdAt?: string;
 };
 
@@ -157,45 +189,15 @@ export default function TrialDashboard() {
   const [section, setSection] = useState<Section>("today");
   const [workoutTab, setWorkoutTab] = useState<"gym" | "home">("gym");
   const [userName, setUserName] = useState<string>("");
-  const [history, setHistory] = useState<CheckIn[]>([]);
+  const [history, setHistory] = useState<Completion[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewDraft, setReviewDraft] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
-  // Days the user manually unlocked early by clicking the lock icon. Persisted
-  // to localStorage so an unlock survives a refresh. Auto-unlock by date still
-  // runs in parallel — the union of the two is what ModuleLadder displays.
-  const [manualUnlocks, setManualUnlocks] = useState<Set<number>>(() => {
-    if (typeof window === "undefined") return new Set();
-    try {
-      const raw = localStorage.getItem("brj.trial.manualUnlocks");
-      if (!raw) return new Set();
-      const parsed = JSON.parse(raw) as unknown;
-      if (!Array.isArray(parsed)) return new Set();
-      return new Set(
-        parsed
-          .map((n) => Number(n))
-          .filter((n) => Number.isInteger(n) && n >= 1 && n <= 7),
-      );
-    } catch {
-      return new Set();
-    }
-  });
-  function unlockDay(day: number) {
-    setManualUnlocks((prev) => {
-      if (prev.has(day)) return prev;
-      const next = new Set(prev).add(day);
-      try {
-        localStorage.setItem(
-          "brj.trial.manualUnlocks",
-          JSON.stringify(Array.from(next).sort()),
-        );
-      } catch {
-        // localStorage disabled — non-fatal, in-memory state still works
-      }
-      return next;
-    });
-  }
+  // Days the user has confirmed they watched this session. The lesson gate is a
+  // soft UX step (the hard gate is server-side completion); we keep it in memory
+  // so the metrics form only appears once they've watched today's video.
+  const [watchedDays, setWatchedDays] = useState<Set<number>>(new Set());
 
   useEffect(() => {
     document.title = "Your 7-Day Dashboard | BigRonJones®";
@@ -236,21 +238,18 @@ export default function TrialDashboard() {
           setReviews(json.feedback || []);
         }
 
+        // select("*") keeps this resilient before the metrics migration runs —
+        // we read whatever rating columns exist and ignore the rest.
         const { data: rows, error } = await supabase
           .from("day_completions")
-          .select("trial_day, feedback_text, completed_at")
+          .select("*")
           .order("trial_day", { ascending: true });
         if (!mounted) return;
         if (error) {
           console.warn("[trial-dashboard] completions:", error.message);
           return;
         }
-        const completions: CheckIn[] = (rows || []).map((r) => ({
-          trialDay: Number(r.trial_day),
-          feedback: (r.feedback_text as string) || "",
-          createdAt: (r.completed_at as string) || undefined,
-        }));
-        setHistory(completions);
+        setHistory((rows || []).map(rowToCompletion));
       } catch (err) {
         console.warn("[trial-dashboard] failed to load data", err);
       }
@@ -260,19 +259,27 @@ export default function TrialDashboard() {
     };
   }, []);
 
-  const currentDay = Math.max(1, Math.min(7, trial.trialDay || 1));
-  const today = PROGRAM[currentDay - 1];
   const completedDays = useMemo(
     () => new Set(history.map((h) => h.trialDay)),
     [history],
   );
   const completedCount = completedDays.size;
+
+  // Completion-based progression: the current day is the first one not yet
+  // completed. Day N+1 is gated on Day N's completion row existing (server
+  // enforced) — no calendar/time gating, no localStorage.
+  const currentDay = useMemo(() => {
+    let d = 1;
+    while (d < 7 && completedDays.has(d)) d += 1;
+    return d;
+  }, [completedDays]);
+
+  const allComplete = completedDays.has(7);
+  const today = PROGRAM[currentDay - 1];
+  const watchedToday = watchedDays.has(currentDay);
   const checkedInToday = completedDays.has(currentDay);
   const percent = Math.round((completedCount / 7) * 100);
 
-  // When the user navigates between days (or the current day changes), reset
-  // the review draft to whatever they last saved for that day. Empty when
-  // they haven't written one yet.
   const todaysReview = useMemo(
     () => reviews.find((r) => r.trialDay === currentDay) || null,
     [reviews, currentDay],
@@ -281,11 +288,18 @@ export default function TrialDashboard() {
     setReviewDraft(todaysReview?.review || "");
   }, [todaysReview, currentDay]);
 
+  function markWatched(day: number) {
+    setWatchedDays((prev) => {
+      if (prev.has(day)) return prev;
+      return new Set(prev).add(day);
+    });
+  }
+
   async function submitReview() {
     const review = reviewDraft.trim();
     if (!review) {
       push({
-        title: "Review can't be empty",
+        title: "Note can't be empty",
         description: "Write a few words for Ron before submitting.",
         variant: "error",
       });
@@ -317,13 +331,13 @@ export default function TrialDashboard() {
         return next;
       });
       push({
-        title: `Day ${currentDay} review sent`,
+        title: `Day ${currentDay} note sent`,
         description: "Ron will read it directly.",
         variant: "success",
       });
     } catch (err) {
       push({
-        title: "Couldn't save review",
+        title: "Couldn't save note",
         description: err instanceof Error ? err.message : "Try again",
         variant: "error",
       });
@@ -332,16 +346,8 @@ export default function TrialDashboard() {
     }
   }
 
-  async function submitCheckIn(form: CheckInForm) {
-    const feedback = form.feedback.trim();
-    if (!feedback) {
-      push({
-        title: "Add a quick note first",
-        description: "Tell Ron how today went, even one sentence.",
-        variant: "error",
-      });
-      return;
-    }
+  async function submitDay(ratings: Ratings) {
+    const day = currentDay;
     setSubmitting(true);
     try {
       const res = await fetch("/api/day-complete", {
@@ -352,42 +358,48 @@ export default function TrialDashboard() {
           ...(await authHeaders()),
         },
         body: JSON.stringify({
-          trialDay: currentDay,
-          feedbackText: feedback,
+          trialDay: day,
+          watchedVideo: true,
+          energyRating: ratings.energy,
+          moodRating: ratings.mood,
+          libidoRating: ratings.libido,
+          performanceRating: ratings.performance,
+          sleepRating: ratings.sleep,
+          rhrRating: ratings.rhr,
         }),
       });
       const json = (await res.json().catch(() => ({}))) as {
         error?: string;
         code?: string;
+        trialComplete?: boolean;
       };
       if (!res.ok) {
         if (res.status === 503 && json.code === "SCHEMA_MIGRATION_REQUIRED") {
           push({
             title: "Database setup incomplete",
             description:
-              "Ask the admin to run backend/sql/MIGRATE.sql in Supabase to enable check-ins.",
+              "Ask the admin to run backend/sql/12_trial_daily_metrics.sql in Supabase to enable the check-in form.",
             variant: "error",
           });
           return;
         }
         throw new Error(json.error || `HTTP ${res.status}`);
       }
+      setHistory((prev) => [
+        ...prev.filter((h) => h.trialDay !== day),
+        { trialDay: day, ratings, createdAt: new Date().toISOString() },
+      ]);
       push({
-        title: `Day ${currentDay} complete`,
+        title: `Day ${day} complete`,
         description:
-          currentDay >= 7
+          day >= 7
             ? "Trial complete — Ron will review your week."
-            : `Nice — Day ${currentDay + 1} unlocks tomorrow.`,
+            : `Locked in. Day ${day + 1} is unlocked.`,
         variant: "success",
       });
-      setHistory((prev) => [
-        {
-          trialDay: currentDay,
-          feedback,
-          createdAt: new Date().toISOString(),
-        },
-        ...prev.filter((h) => h.trialDay !== currentDay),
-      ]);
+      // Drop them back on the Today tab so the next day's lesson is front and
+      // centre (or the completion screen on Day 7).
+      setSection("today");
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Failed to save";
       push({
@@ -403,21 +415,29 @@ export default function TrialDashboard() {
   return (
     <main className="min-h-screen bg-[#050505] pb-24 pt-28 text-white sm:pt-32">
       {/* Header */}
-      <section className="px-6 md:px-10">
+      <section className="px-5 sm:px-6 md:px-10">
         <div className="mx-auto max-w-[1200px]">
           <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="font-['DM_Mono'] text-[11px] uppercase tracking-[0.3em] text-[#E8192C]">
                 7-Day Oversight Trial
               </p>
-              <h1 className="mt-3 font-['Bebas_Neue'] text-5xl leading-[0.95] sm:text-6xl">
-                {userName ? `Welcome back, ${firstName(userName)}.` : "Welcome back."}
+              <h1 className="mt-3 font-['Bebas_Neue'] text-[40px] leading-[0.95] sm:text-6xl">
+                {userName
+                  ? `Welcome back, ${firstName(userName)}.`
+                  : "Welcome back."}
               </h1>
               <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/55">
-                You're on{" "}
-                <span className="text-white">Day {currentDay} of 7</span>. Open
-                today's lesson, run the workout, and submit your check-in. Ron
-                reviews every signal.
+                {allComplete ? (
+                  "All 7 days logged. Ron is reviewing your week — your continuation window is open."
+                ) : (
+                  <>
+                    You're on{" "}
+                    <span className="text-white">Day {currentDay} of 7</span>.
+                    Watch today's lesson, then rate your six daily metrics to
+                    unlock the next day.
+                  </>
+                )}
               </p>
             </div>
 
@@ -459,12 +479,6 @@ export default function TrialDashboard() {
               label="Workouts"
             />
             <TabButton
-              active={section === "checkin"}
-              onClick={() => setSection("checkin")}
-              icon={<Activity size={14} />}
-              label="Daily Check-In"
-            />
-            <TabButton
               active={section === "history"}
               onClick={() => setSection("history")}
               icon={<TrendingUp size={14} />}
@@ -475,48 +489,39 @@ export default function TrialDashboard() {
       </section>
 
       {/* Content */}
-      <section className="mt-10 px-6 md:px-10">
+      <section className="mt-8 px-5 sm:mt-10 sm:px-6 md:px-10">
         <div className="mx-auto max-w-[1200px]">
-          {section === "today" && (
-            <TodaySection
-              day={today}
-              currentDay={currentDay}
-              checkedInToday={checkedInToday}
-              onJumpToCheckIn={() => setSection("checkin")}
-              onJumpToWorkouts={() => setSection("workouts")}
-              reviewDraft={reviewDraft}
-              onReviewChange={setReviewDraft}
-              onReviewSubmit={submitReview}
-              submittingReview={submittingReview}
-              existingReview={todaysReview}
-            />
-          )}
+          {section === "today" &&
+            (allComplete ? (
+              <TrialCompleteCard trial={trial} />
+            ) : (
+              <TodaySection
+                key={currentDay}
+                day={today}
+                currentDay={currentDay}
+                watched={watchedToday}
+                onMarkWatched={() => markWatched(currentDay)}
+                onSubmitDay={submitDay}
+                submitting={submitting}
+                checkedIn={checkedInToday}
+                onJumpToWorkouts={() => setSection("workouts")}
+                reviewDraft={reviewDraft}
+                onReviewChange={setReviewDraft}
+                onReviewSubmit={submitReview}
+                submittingReview={submittingReview}
+                existingReview={todaysReview}
+              />
+            ))}
           {section === "modules" && (
             <ModuleLadder
               program={PROGRAM}
               currentDay={currentDay}
               completedDays={completedDays}
-              manualUnlocks={manualUnlocks}
-              onUnlock={unlockDay}
+              onGoToDay={() => setSection("today")}
             />
           )}
           {section === "workouts" && (
-            <WorkoutsSection
-              tab={workoutTab}
-              onTabChange={setWorkoutTab}
-            />
-          )}
-          {section === "checkin" && (
-            <CheckInSection
-              day={today}
-              currentDay={currentDay}
-              checkedIn={checkedInToday}
-              submitting={submitting}
-              onSubmit={submitCheckIn}
-              existing={
-                history.find((h) => h.trialDay === currentDay) || null
-              }
-            />
+            <WorkoutsSection tab={workoutTab} onTabChange={setWorkoutTab} />
           )}
           {section === "history" && <HistorySection history={history} />}
         </div>
@@ -532,8 +537,11 @@ export default function TrialDashboard() {
 function TodaySection({
   day,
   currentDay,
-  checkedInToday,
-  onJumpToCheckIn,
+  watched,
+  onMarkWatched,
+  onSubmitDay,
+  submitting,
+  checkedIn,
   onJumpToWorkouts,
   reviewDraft,
   onReviewChange,
@@ -543,8 +551,11 @@ function TodaySection({
 }: {
   day: Day;
   currentDay: number;
-  checkedInToday: boolean;
-  onJumpToCheckIn: () => void;
+  watched: boolean;
+  onMarkWatched: () => void;
+  onSubmitDay: (ratings: Ratings) => void;
+  submitting: boolean;
+  checkedIn: boolean;
   onJumpToWorkouts: () => void;
   reviewDraft: string;
   onReviewChange: (v: string) => void;
@@ -553,50 +564,65 @@ function TodaySection({
   existingReview: Review | null;
 }) {
   return (
-    <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr]">
-      <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-6 md:p-8">
+    <div className="grid gap-6 lg:grid-cols-[1.45fr_1fr]">
+      <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5 sm:p-6 md:p-8">
         <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
           Day {currentDay} · {day.focus}
         </p>
-        <h2 className="mt-3 font-['Bebas_Neue'] text-4xl leading-none sm:text-5xl">
+        <h2 className="mt-3 font-['Bebas_Neue'] text-3xl leading-none sm:text-4xl md:text-5xl">
           {day.title}
         </h2>
         <p className="mt-4 max-w-2xl text-[15px] leading-relaxed text-white/65">
           {day.description}
         </p>
 
+        {/* Step 1 — Watch the lesson */}
         <div className="mt-6">
-          <VideoPlayer videoId={day.lessonVideoId} title={day.title} />
+          <StepLabel n={1} label="Watch the lesson" done={watched} />
+          <div className="mt-3">
+            <VideoPlayer videoId={day.lessonVideoId} title={day.title} />
+          </div>
+          {!watched && (
+            <button
+              type="button"
+              onClick={onMarkWatched}
+              className="mt-3 inline-flex w-full items-center justify-center gap-2 border border-[#E8192C]/50 bg-[#E8192C]/[0.08] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:border-[#E8192C] hover:bg-[#E8192C]/15 sm:w-auto"
+            >
+              <CheckCircle2 size={14} />
+              I&apos;ve watched today&apos;s lesson
+            </button>
+          )}
         </div>
 
-        <div className="mt-6">
-          <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/45">
-            Today's session
-          </p>
-          <ul className="mt-3 grid gap-2">
-            {day.keyPoints.map((point) => (
-              <li
-                key={point}
-                className="flex gap-3 border-l-2 border-[#E8192C]/40 bg-black/40 px-4 py-2.5 text-sm text-white/75"
-              >
-                <span className="text-[#E8192C]">·</span>
-                {point}
-              </li>
-            ))}
-          </ul>
+        {/* Step 2 — Daily metrics form (revealed once the lesson is watched) */}
+        <div className="mt-8 border-t border-[#1a1a1a] pt-6">
+          <StepLabel n={2} label="Rate your six daily metrics" done={checkedIn} />
+          {!watched ? (
+            <div className="mt-4 flex items-center gap-3 border border-dashed border-[#1a1a1a] bg-black/40 px-4 py-5 text-[13px] text-white/45">
+              <Lock size={16} className="shrink-0 text-white/40" />
+              Watch today&apos;s lesson above to open your daily check-in.
+            </div>
+          ) : (
+            <DailyMetricsForm
+              currentDay={currentDay}
+              submitting={submitting}
+              checkedIn={checkedIn}
+              onSubmit={onSubmitDay}
+            />
+          )}
         </div>
 
-        {/* Per-day review — goes straight to Ron's feedback inbox */}
+        {/* Optional note straight to Ron's inbox */}
         <div className="mt-8 border-t border-[#1a1a1a] pt-6">
           <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
-            Your review for Day {currentDay}
+            Anything for Ron? <span className="text-white/40">(optional)</span>
           </p>
           <p className="mt-2 text-[13px] leading-relaxed text-white/55">
-            Drop your honest take after watching the lesson — what landed, what
-            didn't, what you want Ron to address. Ron reads every one.
+            Drop your honest take — what landed, what didn&apos;t, what you want
+            Ron to address. He reads every one.
           </p>
           <textarea
-            rows={5}
+            rows={4}
             value={reviewDraft}
             onChange={(e) => onReviewChange(e.target.value)}
             placeholder="What's working? What's hard? Questions for Ron?"
@@ -606,24 +632,24 @@ function TodaySection({
           <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
             <p className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/35">
               {existingReview
-                ? `Last submitted ${
+                ? `Last sent ${
                     existingReview.updatedAt
                       ? new Date(existingReview.updatedAt).toLocaleString()
                       : "earlier"
-                  } · editing replaces`
-                : "Not submitted yet"}
+                  }`
+                : "Not sent yet"}
             </p>
             <button
               type="button"
               onClick={onReviewSubmit}
               disabled={submittingReview || reviewDraft.trim().length === 0}
-              className="inline-flex items-center gap-2 bg-[#E8192C] px-5 py-2.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#b50f1f] disabled:opacity-50"
+              className="inline-flex items-center gap-2 border border-[#1a1a1a] px-5 py-2.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/85 transition-colors hover:border-[#E8192C] hover:text-white disabled:opacity-50"
             >
               {submittingReview
                 ? "Sending..."
                 : existingReview
-                  ? "Update Review"
-                  : "Send Review to Ron"}
+                  ? "Update Note"
+                  : "Send Note to Ron"}
             </button>
           </div>
 
@@ -643,13 +669,14 @@ function TodaySection({
         </div>
       </div>
 
+      {/* Sidebar */}
       <div className="flex flex-col gap-4">
         <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5">
           <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-[#E8192C]">
-            Step 1 · Run your workout
+            Run your workout
           </p>
           <p className="mt-2 font-['DM_Sans'] text-sm leading-relaxed text-white/70">
-            Pick gym or home — both versions are programmed.
+            Pick gym or home — both versions are programmed for Day {currentDay}.
           </p>
           <button
             type="button"
@@ -663,23 +690,19 @@ function TodaySection({
 
         <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5">
           <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-[#E8192C]">
-            Step 2 · Submit check-in
+            How this works
           </p>
-          <p className="mt-2 font-['DM_Sans'] text-sm leading-relaxed text-white/70">
-            {checkedInToday
-              ? "Today's check-in is logged. You can update the note from the form."
-              : "One quick note about your day. Submit to complete Day " +
-                currentDay +
-                " and unlock the next one."}
-          </p>
-          <button
-            type="button"
-            onClick={onJumpToCheckIn}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 border border-[#1a1a1a] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white/75 transition-colors hover:border-[#E8192C] hover:text-white"
-          >
-            <Activity size={14} />
-            {checkedInToday ? "View Today's Check-In" : "Daily Check-In"}
-          </button>
+          <ul className="mt-3 grid gap-2">
+            {day.keyPoints.map((point) => (
+              <li
+                key={point}
+                className="flex gap-2.5 text-[13px] leading-relaxed text-white/70"
+              >
+                <span className="mt-0.5 text-[#E8192C]">·</span>
+                {point}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5">
@@ -702,32 +725,199 @@ function TodaySection({
   );
 }
 
+// The six-metric, 1-5 daily check-in. Submitting it completes the day and
+// unlocks the next one.
+function DailyMetricsForm({
+  currentDay,
+  submitting,
+  checkedIn,
+  onSubmit,
+}: {
+  currentDay: number;
+  submitting: boolean;
+  checkedIn: boolean;
+  onSubmit: (ratings: Ratings) => void;
+}) {
+  const [ratings, setRatings] = useState<Ratings>(EMPTY_RATINGS);
+  const allRated = METRICS.every((m) => ratings[m.key] >= 1);
+
+  function setMetric(key: MetricKey, value: number) {
+    setRatings((prev) => ({ ...prev, [key]: value }));
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!allRated) return;
+    onSubmit(ratings);
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-4">
+      <p className="text-[13px] leading-relaxed text-white/55">
+        Rate each one from 1 to 5 for today. Submitting marks Day {currentDay}
+        {" "}complete and unlocks Day {Math.min(currentDay + 1, 7)}.
+      </p>
+
+      <div className="mt-5 grid gap-3">
+        {METRICS.map((m) => (
+          <RatingRow
+            key={m.key}
+            label={m.label}
+            hint={m.hint}
+            value={ratings[m.key]}
+            onChange={(v) => setMetric(m.key, v)}
+          />
+        ))}
+      </div>
+
+      <button
+        type="submit"
+        disabled={submitting || !allRated}
+        className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[#E8192C] px-5 py-3.5 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#b50f1f] disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {submitting
+          ? "Saving..."
+          : !allRated
+            ? "Rate all six to continue"
+            : checkedIn
+              ? `Update Day ${currentDay}`
+              : currentDay >= 7
+                ? "Finish the trial"
+                : `Complete Day ${currentDay} & unlock Day ${currentDay + 1}`}
+      </button>
+    </form>
+  );
+}
+
+function RatingRow({
+  label,
+  hint,
+  value,
+  onChange,
+}: {
+  label: string;
+  hint: string;
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  return (
+    <div className="border border-[#1a1a1a] bg-black/40 p-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <p className="font-['Bebas_Neue'] text-xl leading-none tracking-wide text-white">
+            {label}
+          </p>
+          <p className="mt-1 text-[12px] leading-snug text-white/45">{hint}</p>
+        </div>
+        <div className="flex shrink-0 items-center gap-2">
+          {[1, 2, 3, 4, 5].map((n) => {
+            const active = value >= 1 && n <= value;
+            const selected = value === n;
+            return (
+              <button
+                key={n}
+                type="button"
+                aria-label={`${label} ${n} out of 5`}
+                aria-pressed={selected}
+                onClick={() => onChange(n)}
+                className={`flex h-11 w-11 items-center justify-center border font-['Bebas_Neue'] text-2xl leading-none transition-colors sm:h-10 sm:w-10 sm:text-xl ${
+                  active
+                    ? "border-[#E8192C] bg-[#E8192C] text-white"
+                    : "border-[#1f1f1f] bg-[#0d0d0d] text-white/45 hover:border-[#E8192C]/60 hover:text-white"
+                }`}
+              >
+                {n}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StepLabel({
+  n,
+  label,
+  done,
+}: {
+  n: number;
+  label: string;
+  done: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-3">
+      <span
+        className={`flex h-6 w-6 items-center justify-center border text-[11px] font-bold ${
+          done
+            ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300"
+            : "border-[#E8192C]/50 bg-[#E8192C]/10 text-[#E8192C]"
+        } font-['DM_Mono']`}
+      >
+        {done ? <CheckCircle2 size={13} /> : n}
+      </span>
+      <span className="font-['DM_Mono'] text-[11px] uppercase tracking-[0.25em] text-white/70">
+        {label}
+      </span>
+    </div>
+  );
+}
+
+function TrialCompleteCard({ trial }: { trial: ReturnType<typeof useTrialStatus> }) {
+  return (
+    <div className="border border-[#E8192C]/30 bg-gradient-to-br from-[#E8192C]/[0.08] via-[#0d0d0d] to-[#0d0d0d] p-6 text-center sm:p-12">
+      <CheckCircle2 size={40} className="mx-auto text-[#E8192C]" />
+      <h2 className="mt-5 font-['Bebas_Neue'] text-4xl leading-none sm:text-6xl">
+        SEVEN DAYS DONE.
+      </h2>
+      <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-white/65">
+        Every day is logged and your metrics are in front of Ron. Your
+        continuation window is open — decide your next step while it&apos;s
+        warm.
+      </p>
+      <div className="mt-7 flex flex-col items-center justify-center gap-3 sm:flex-row">
+        <Link
+          to="/continue"
+          className="inline-flex items-center gap-2 bg-[#E8192C] px-7 py-4 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#b50f1f]"
+        >
+          View Continuation →
+        </Link>
+        <Link
+          to="/contact"
+          className="inline-flex items-center gap-2 border border-[#1a1a1a] px-7 py-4 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white/75 transition-colors hover:border-[#E8192C] hover:text-white"
+        >
+          Message the team
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 function ModuleLadder({
   program,
   currentDay,
   completedDays,
-  manualUnlocks,
-  onUnlock,
+  onGoToDay,
 }: {
   program: Day[];
   currentDay: number;
   completedDays: Set<number>;
-  manualUnlocks: Set<number>;
-  onUnlock: (day: number) => void;
+  onGoToDay: () => void;
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {program.map((day) => {
-        // A day is open if the schedule has rolled past it OR the user
-        // manually unlocked it by clicking the padlock card.
-        const unlocked = day.day <= currentDay || manualUnlocks.has(day.day);
+        // Completion-based gating: Day 1 is always open; every later day opens
+        // only once the previous day is completed.
+        const unlocked = day.day === 1 || completedDays.has(day.day - 1);
         const completed = completedDays.has(day.day);
+        const isCurrent = day.day === currentDay && !completed;
         return (
           <div
             key={day.day}
             className={`relative border bg-[#0d0d0d] p-5 ${
               unlocked ? "border-[#1a1a1a]" : "border-[#0f0f0f]"
-            }`}
+            } ${isCurrent ? "ring-1 ring-[#E8192C]/40" : ""}`}
           >
             <div className="flex items-center justify-between">
               <span className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-[#E8192C]">
@@ -756,21 +946,22 @@ function ModuleLadder({
             <p className="mt-3 font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/35">
               {day.focus}
             </p>
-            {!unlocked && (
+            {isCurrent && (
               <button
                 type="button"
-                onClick={() => onUnlock(day.day)}
-                aria-label={`Unlock Day ${day.day}`}
-                className="group absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/65 backdrop-blur-[2px] transition-colors hover:bg-black/50 cursor-pointer"
+                onClick={onGoToDay}
+                className="mt-4 inline-flex w-full items-center justify-center gap-2 bg-[#E8192C] px-4 py-2.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#b50f1f]"
               >
-                <Lock
-                  size={22}
-                  className="text-white/60 group-hover:text-[#E8192C] transition-colors"
-                />
-                <span className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/55 group-hover:text-white">
-                  Click to unlock
-                </span>
+                <PlayCircle size={13} /> Continue Day {day.day}
               </button>
+            )}
+            {!unlocked && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/65 backdrop-blur-[2px]">
+                <Lock size={22} className="text-white/55" />
+                <span className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/55">
+                  Finish Day {day.day - 1} first
+                </span>
+              </div>
             )}
           </div>
         );
@@ -852,120 +1043,17 @@ function WorkoutsSection({
   );
 }
 
-type CheckInForm = {
-  feedback: string;
-};
-
-function CheckInSection({
-  day,
-  currentDay,
-  checkedIn,
-  submitting,
-  onSubmit,
-  existing,
-}: {
-  day: Day;
-  currentDay: number;
-  checkedIn: boolean;
-  submitting: boolean;
-  onSubmit: (form: CheckInForm) => void;
-  existing: CheckIn | null;
-}) {
-  const [form, setForm] = useState<CheckInForm>({
-    feedback: existing?.feedback || "",
-  });
-
-  // If the user already checked in today, prefill the textarea so they can
-  // edit instead of starting blank.
-  useEffect(() => {
-    setForm({ feedback: existing?.feedback || "" });
-  }, [existing?.feedback, currentDay]);
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    onSubmit(form);
-  }
-
-  return (
-    <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
-      <form
-        onSubmit={handleSubmit}
-        className="border border-[#1a1a1a] bg-[#0d0d0d] p-6 md:p-8"
-      >
-        <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
-          Day {currentDay} · {checkedIn ? "Update Check-In" : "Daily Check-In"}
-        </p>
-        <h2 className="mt-3 font-['Bebas_Neue'] text-4xl leading-none">
-          {day.title}
-        </h2>
-        <p className="mt-3 text-sm leading-relaxed text-white/55">
-          One quick note about your day. Hitting submit marks Day {currentDay}
-          {" "}complete and unlocks Day {Math.min(currentDay + 1, 7)}.
-        </p>
-
-        <label className="mt-7 block">
-          <span className="mb-2 block font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/45">
-            How did Day {currentDay} go?
-          </span>
-          <textarea
-            rows={8}
-            value={form.feedback}
-            onChange={(e) => setForm({ feedback: e.target.value })}
-            placeholder="Workout, food, sleep, mood — whatever stood out. Ron reads every one."
-            maxLength={4000}
-            className="w-full resize-y border border-[#1a1a1a] bg-black px-3 py-3 text-sm leading-relaxed outline-none focus:border-[#E8192C]"
-          />
-        </label>
-
-        <button
-          type="submit"
-          disabled={submitting || form.feedback.trim().length === 0}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 bg-[#E8192C] px-5 py-3.5 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#b50f1f] disabled:opacity-50"
-        >
-          {submitting
-            ? "Saving..."
-            : checkedIn
-              ? `Update Day ${currentDay}`
-              : `Complete Day ${currentDay}`}
-        </button>
-      </form>
-
-      <aside className="flex flex-col gap-4">
-        <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5">
-          <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
-            How this works
-          </p>
-          <p className="mt-3 text-[13px] leading-relaxed text-white/65">
-            Each day you watch the lesson, run your workout, and write a quick
-            check-in. Submit it to mark the day complete — the next day unlocks
-            automatically.
-          </p>
-        </div>
-        <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5">
-          <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
-            Tip
-          </p>
-          <p className="mt-3 text-[13px] leading-relaxed text-white/65">
-            Be honest. A short, real note beats a polished one — Ron uses these
-            to calibrate the rest of your week.
-          </p>
-        </div>
-      </aside>
-    </div>
-  );
-}
-
-function HistorySection({ history }: { history: CheckIn[] }) {
+function HistorySection({ history }: { history: Completion[] }) {
   if (history.length === 0) {
     return (
-      <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-6 sm:p-10 text-center">
+      <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-6 text-center sm:p-10">
         <Activity size={28} className="mx-auto text-[#E8192C]/70" />
         <p className="mt-4 font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/45">
           Nothing logged yet
         </p>
-        <p className="mt-2 max-w-md mx-auto text-sm text-white/55">
-          Submit your first check-in from the Daily Check-In tab. Past entries
-          will live here for you and Ron to review.
+        <p className="mx-auto mt-2 max-w-md text-sm text-white/55">
+          Complete a day from the Today tab and your daily metrics will live
+          here for you and Ron to review.
         </p>
       </div>
     );
@@ -994,6 +1082,26 @@ function HistorySection({ history }: { history: CheckIn[] }) {
               </p>
             </div>
           </div>
+          {hasAnyRating(row.ratings) && (
+            <div className="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-6">
+              {METRICS.map((m) => (
+                <div
+                  key={m.key}
+                  className="border border-[#1a1a1a] bg-black/40 px-2 py-2 text-center"
+                >
+                  <p className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.15em] text-white/40">
+                    {m.label}
+                  </p>
+                  <p className="mt-1 font-['Bebas_Neue'] text-2xl leading-none text-white">
+                    {row.ratings[m.key] ?? "—"}
+                    {row.ratings[m.key] ? (
+                      <span className="text-sm text-white/35">/5</span>
+                    ) : null}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
           {row.feedback && (
             <p className="mt-4 whitespace-pre-wrap text-[14px] leading-relaxed text-white/75">
               {row.feedback}
@@ -1008,6 +1116,28 @@ function HistorySection({ history }: { history: CheckIn[] }) {
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
+
+function rowToCompletion(r: Record<string, unknown>): Completion {
+  const num = (v: unknown) =>
+    typeof v === "number" && v >= 1 && v <= 5 ? v : undefined;
+  return {
+    trialDay: Number(r.trial_day),
+    feedback: (r.feedback_text as string) || undefined,
+    createdAt: (r.completed_at as string) || undefined,
+    ratings: {
+      energy: num(r.energy_rating),
+      mood: num(r.mood_rating),
+      libido: num(r.libido_rating),
+      performance: num(r.performance_rating),
+      sleep: num(r.sleep_rating),
+      rhr: num(r.rhr_rating),
+    },
+  };
+}
+
+function hasAnyRating(ratings: Partial<Ratings>) {
+  return METRICS.some((m) => typeof ratings[m.key] === "number");
+}
 
 function firstName(full: string) {
   return full.trim().split(/\s+/)[0];
@@ -1059,7 +1189,7 @@ function TabButton({
     <button
       type="button"
       onClick={onClick}
-      className={`-mb-px inline-flex items-center gap-2 border-b-2 px-4 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] transition-colors ${
+      className={`-mb-px inline-flex items-center gap-2 border-b-2 px-3 py-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.18em] transition-colors sm:px-4 sm:text-[11px] sm:tracking-[0.2em] ${
         active
           ? "border-[#E8192C] text-white"
           : "border-transparent text-white/50 hover:text-white"
@@ -1071,22 +1201,10 @@ function TabButton({
   );
 }
 
-function VideoPlayer({
-  videoId,
-  title,
-  compact,
-}: {
-  videoId: string;
-  title: string;
-  compact?: boolean;
-}) {
+function VideoPlayer({ videoId, title }: { videoId: string; title: string }) {
   if (!videoId) {
     return (
-      <div
-        className={`flex ${
-          compact ? "h-full" : "aspect-video"
-        } w-full flex-col items-center justify-center border border-dashed border-[#1a1a1a] bg-[radial-gradient(circle_at_30%_20%,rgba(232,25,44,0.18),rgba(0,0,0,0)_60%),#0a0a0a] text-center`}
-      >
+      <div className="flex aspect-video w-full flex-col items-center justify-center border border-dashed border-[#1a1a1a] bg-[radial-gradient(circle_at_30%_20%,rgba(232,25,44,0.18),rgba(0,0,0,0)_60%),#0a0a0a] text-center">
         <PlayCircle size={36} className="text-[#E8192C]/70" />
         <p className="mt-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/55">
           Video uploading soon
@@ -1101,7 +1219,7 @@ function VideoPlayer({
     <iframe
       title={title}
       src={`https://www.youtube.com/embed/${videoId}`}
-      className="aspect-video h-full w-full"
+      className="aspect-video h-full w-full border border-[#1a1a1a]"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
       allowFullScreen
     />

@@ -134,8 +134,8 @@ export default function Footer() {
             </Link>
             <p className="font-['DM_Sans'] text-sm italic text-white/60">
               Private online strength and wellness coaching for adults 35+
-              through structured training, nutrition support, weekly Zoom
-              oversight, and real accountability.
+              through structured training, nutrition support, weekly
+              accountability, and practical advice for real-world goals.
             </p>
             <a
               href={`mailto:${siteData.contact.email}`}
@@ -168,7 +168,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-10 border-b border-[#1a1a1a] py-12 md:grid-cols-4 md:gap-6">
           <div className="col-span-2 md:col-span-1">
             <h3 className="mb-5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.3em] text-[#E8192C]">
-              — Join The List
+              — Join The BigRonJones® Email List
             </h3>
             <p className="mb-4 font-['DM_Sans'] text-sm leading-relaxed text-white/55">
               Get practical training, nutrition, and wellness guidance for
@@ -196,7 +196,7 @@ export default function Footer() {
                     ? "✓ Welcome"
                     : state === "error"
                       ? "Try Again"
-                      : "Join Free"}
+                      : "Join The List"}
               </button>
             </form>
             <Link

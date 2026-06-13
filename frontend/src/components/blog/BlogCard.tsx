@@ -45,7 +45,7 @@ export default function BlogCard({
         <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#111827] transition-all duration-500 hover:border-brand-blue/40 hover:shadow-xl hover:shadow-brand-blue/10">
           {/* Image */}
           <div className={`relative ${imageHeight} overflow-hidden`}>
-            <img src={blog.coverImage} alt={blog.title} className="object-cover transition-transform duration-500 group-hover:scale-110" sizes={isFeatured ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} />
+            <img src={blog.coverImage} alt={blog.title} loading="lazy" decoding="async" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" sizes={isFeatured ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} />
             <div className="absolute inset-0 bg-gradient-to-t from-brand-black to-transparent" />
 
             {/* Category badge */}
@@ -103,7 +103,7 @@ export default function BlogCard({
             <div className="mt-4 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="relative h-5 w-5 overflow-hidden rounded-full">
-                  <img src={blog.author.avatar} alt={blog.author.name} className="object-cover" />
+                  <img src={blog.author.avatar} alt={blog.author.name} loading="lazy" className="h-full w-full object-cover" />
                 </div>
                 <span className="text-xs text-brand-gray-light font-body">
                   {blog.author.name}

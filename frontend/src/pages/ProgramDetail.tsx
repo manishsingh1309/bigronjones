@@ -1,6 +1,7 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import { Check, ArrowRight, ChevronLeft } from "lucide-react";
 import { programs, getProgramBySlug, type ProgramDetail } from "@/data/programs";
+import SmartLink from "@/components/shared/SmartLink";
 import ProgramSpotlightCard from "@/components/shared/ProgramSpotlightCard";
 import { testimonials } from "@/data/testimonials";
 
@@ -73,13 +74,13 @@ export default function ProgramDetailPage() {
             </div>
 
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-              <Link
+              <SmartLink
                 to={program.ctaLink}
                 className="inline-flex items-center justify-center gap-2 bg-[#E8192C] px-7 py-4 font-['DM_Mono'] text-[11px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#b50f1f]"
               >
                 {program.cta}
                 <ArrowRight size={13} />
-              </Link>
+              </SmartLink>
               <Link
                 to="/consult"
                 className="inline-flex items-center justify-center gap-2 border border-[#1a1a1a] px-7 py-4 font-['DM_Mono'] text-[11px] uppercase tracking-[0.18em] text-white transition-colors hover:border-[#E8192C]"
@@ -235,13 +236,13 @@ export default function ProgramDetailPage() {
             One decision. One program. One coach in your corner. The only thing between you and results is the choice to begin.
           </p>
           <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link
+            <SmartLink
               to={program.ctaLink}
               className="inline-flex items-center justify-center gap-2 bg-[#E8192C] px-8 py-4 font-['DM_Mono'] text-[11px] uppercase tracking-[0.18em] text-white transition-colors hover:bg-[#b50f1f]"
             >
               {program.cta}
               <ArrowRight size={13} />
-            </Link>
+            </SmartLink>
             <Link
               to="/consult"
               className="inline-flex items-center justify-center gap-2 border border-[#1a1a1a] bg-[#050505] px-8 py-4 font-['DM_Mono'] text-[11px] uppercase tracking-[0.18em] text-white transition-colors hover:border-[#E8192C]"

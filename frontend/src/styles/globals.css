@@ -128,6 +128,28 @@ body {
   }
 }
 
+/* Hero photo (portrait) — used on desktop + mobile.
+   Mobile: bg-cover shows the full height, so this is about horizontal framing —
+   66% centres Ron (he sits centre-right in the shot). Left untouched; it reads well.
+   Desktop: under bg-cover the portrait fills the full viewport width exactly, so
+   background-position-x has no room to move. A slight zoom (background-size > 100%)
+   creates horizontal overflow, which lets us pan Ron up + toward the right so he
+   sits higher and balances the headline on the left instead of crowding centre. */
+.hero-home {
+  background-position: 55% 18%;
+}
+@media (min-width: 769px) {
+  .hero-home {
+    background-size: 112%;
+    background-position: 36% 30%;
+  }
+}
+@media (max-width: 768px) {
+  .hero-home {
+    background-position: 66% center;
+  }
+}
+
 /* Film grain overlay */
 .grain {
   position: relative;

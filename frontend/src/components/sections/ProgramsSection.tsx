@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Check, ImageOff } from "lucide-react";
-import { Link } from "react-router-dom";
+import SmartLink from "@/components/shared/SmartLink";
 import { useState } from "react";
 import { siteData } from "@/data/site";
 import { CursorSpotlight } from "@/components/ui/spotlight";
@@ -214,12 +214,12 @@ function ProgramCard({ program: p, index: i }: ProgramCardProps) {
           ))}
         </ul>
 
-        <Link
+        <SmartLink
           to={p.href}
           className="mt-auto inline-flex w-full items-center justify-center bg-[#E8192C] px-6 py-4 font-['DM_Mono'] text-[12px] uppercase tracking-[0.2em] text-white transition-colors hover:bg-[#b50f1f]"
         >
           {p.cta}
-        </Link>
+        </SmartLink>
       </div>
     </motion.article>
   );

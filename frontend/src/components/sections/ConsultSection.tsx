@@ -70,7 +70,7 @@ export default function ConsultSection() {
                 className="rounded-xl border border-white/10 bg-white/5 p-4"
               >
                 <div className="relative mb-3 h-32 overflow-hidden rounded-lg">
-                  <img src={c.image} alt={c.name} loading="lazy" decoding="async" className="object-cover object-top" />
+                  <img src={c.image} alt={c.name} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-top" />
                 </div>
                 <h3 className="font-heading text-lg tracking-wider text-white">
                   {c.title}

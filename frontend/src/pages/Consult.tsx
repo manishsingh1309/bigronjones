@@ -89,7 +89,10 @@ export default function ConsultPage() {
                     src={p.image}
                     alt={p.coach}
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                    style={{ objectPosition: "center 25%" }}
+                    style={{
+                      objectPosition:
+                        p.id === "coaching-call" ? "center 18%" : "center 25%",
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f0f] via-transparent to-transparent" />
                   <span className="absolute right-4 top-4 bg-[#E8192C] px-3 py-1.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white">

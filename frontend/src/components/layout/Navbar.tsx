@@ -25,6 +25,7 @@ const navLinks = [
   { label: "WOMEN'S COACHING", href: "/programs/womens" },
   { label: "7-DAY TRIAL", href: "/programs/trial" },
   { label: "CONSULT", href: "/consult" },
+  { label: "BLOG", href: "/blog" },
   { label: "PODCAST", href: "https://podcast.bigronjones.com" },
 ];
 
@@ -160,18 +161,16 @@ export default function Navbar() {
             />
           </Link>
 
-          <div className="hidden items-center gap-7 lg:flex">
+          <div className="hidden items-center gap-7 xl:flex">
             {navLinks.map((item) => {
               const active = isActive(item.href);
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={cn(
-                    "relative font-['DM_Mono'] text-[10px] tracking-[0.25em] uppercase transition-colors",
-                    active ? "text-white" : "text-white/50 hover:text-white",
-                  )}
-                >
+              const external = /^https?:\/\//i.test(item.href);
+              const linkClass = cn(
+                "relative font-['DM_Mono'] text-[10px] tracking-[0.25em] uppercase transition-colors",
+                active ? "text-white" : "text-white/50 hover:text-white",
+              );
+              const inner = (
+                <>
                   {item.label}
                   {active && (
                     <motion.span
@@ -184,6 +183,24 @@ export default function Navbar() {
                       className="absolute -bottom-2 left-0 right-0 h-[1px] bg-[#E8192C]"
                     />
                   )}
+                </>
+              );
+              // External targets (e.g. the Podcast subdomain) must use a real
+              // anchor — react-router's <Link> would treat the absolute URL as
+              // an in-app path and dump the user on the 404 page.
+              return external ? (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={linkClass}
+                >
+                  {inner}
+                </a>
+              ) : (
+                <Link key={item.href} to={item.href} className={linkClass}>
+                  {inner}
                 </Link>
               );
             })}
@@ -209,7 +226,7 @@ export default function Navbar() {
             </Link>
 
             {isAuthenticated ? (
-              <div ref={accountRef} className="relative hidden lg:block">
+              <div ref={accountRef} className="relative hidden xl:block">
                 <button
                   type="button"
                   onClick={() => setAccountOpen((v) => !v)}
@@ -397,7 +414,7 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/auth/login"
-                className="hidden items-center border border-[#1c1c1c] px-4 py-2.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/60 transition-colors hover:border-[#E8192C] hover:text-white lg:inline-flex"
+                className="hidden items-center border border-[#1c1c1c] px-4 py-2.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-white/60 transition-colors hover:border-[#E8192C] hover:text-white xl:inline-flex"
               >
                 SIGN IN
               </Link>
@@ -411,7 +428,7 @@ export default function Navbar() {
                   cta: primaryCta.label,
                 })
               }
-              className="hidden items-center bg-[#E8192C] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#b50f1f] lg:inline-flex"
+              className="hidden items-center bg-[#E8192C] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#b50f1f] xl:inline-flex"
             >
               {primaryCta.label}
             </Link>
@@ -419,7 +436,7 @@ export default function Navbar() {
             {/* Mobile-only compact CTA so the primary action never disappears */}
             <Link
               to={primaryCta.href}
-              className="hidden items-center bg-[#E8192C] px-3 py-2 font-['DM_Mono'] text-[10px] uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#b50f1f] sm:inline-flex lg:hidden"
+              className="hidden items-center bg-[#E8192C] px-3 py-2 font-['DM_Mono'] text-[10px] uppercase tracking-[0.15em] text-white transition-colors hover:bg-[#b50f1f] sm:inline-flex xl:hidden"
             >
               {primaryCta.short}
             </Link>
@@ -428,7 +445,7 @@ export default function Navbar() {
               type="button"
               onClick={() => setOpen(true)}
               aria-label="Open menu"
-              className="flex h-10 w-10 items-center justify-center border border-[#1a1a1a] text-white lg:hidden"
+              className="flex h-10 w-10 items-center justify-center border border-[#1a1a1a] text-white xl:hidden"
             >
               <Menu size={18} />
             </button>
@@ -445,7 +462,7 @@ export default function Navbar() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
-            className="fixed inset-0 z-[60] flex flex-col bg-black lg:hidden"
+            className="fixed inset-0 z-[60] flex flex-col bg-black xl:hidden"
             style={{
               background:
                 "radial-gradient(ellipse 80% 80% at 50% 0%, rgba(232,25,44,0.08) 0%, transparent 60%), linear-gradient(180deg, rgba(10,10,10,1) 0%, rgba(5,5,5,1) 100%)",
@@ -504,6 +521,37 @@ export default function Navbar() {
                 <ul className="flex flex-col gap-y-5">
                   {navLinks.map((item) => {
                     const active = isActive(item.href);
+                    const external = /^https?:\/\//i.test(item.href);
+                    const inner = (
+                      <motion.div
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <span
+                          className={cn(
+                            "block font-['Bebas_Neue'] text-2xl font-bold leading-[1.05] tracking-tight transition-all duration-300",
+                            active
+                              ? "text-[#E8192C]"
+                              : "text-white hover:text-white",
+                          )}
+                        >
+                          {item.label}
+                        </span>
+                        {active && (
+                          <motion.div
+                            layoutId="mobile-menu-underline"
+                            className="mt-1 h-[2px] w-12 bg-[#E8192C] rounded-full"
+                            initial={{ scaleX: 0 }}
+                            animate={{ scaleX: 1 }}
+                            transition={{
+                              duration: 0.3,
+                              ease: [0.22, 1, 0.36, 1],
+                            }}
+                          />
+                        )}
+                      </motion.div>
+                    );
                     return (
                       <motion.li
                         key={item.href}
@@ -519,40 +567,25 @@ export default function Navbar() {
                           },
                         }}
                       >
-                        <Link
-                          to={item.href}
-                          onClick={() => setOpen(false)}
-                          className="relative block"
-                        >
-                          <motion.div
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            transition={{ duration: 0.2 }}
+                        {external ? (
+                          <a
+                            href={item.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={() => setOpen(false)}
+                            className="relative block"
                           >
-                            <span
-                              className={cn(
-                                "block font-['Bebas_Neue'] text-2xl font-bold leading-[1.05] tracking-tight transition-all duration-300",
-                                active
-                                  ? "text-[#E8192C]"
-                                  : "text-white hover:text-white",
-                              )}
-                            >
-                              {item.label}
-                            </span>
-                            {active && (
-                              <motion.div
-                                layoutId="mobile-menu-underline"
-                                className="mt-1 h-[2px] w-12 bg-[#E8192C] rounded-full"
-                                initial={{ scaleX: 0 }}
-                                animate={{ scaleX: 1 }}
-                                transition={{
-                                  duration: 0.3,
-                                  ease: [0.22, 1, 0.36, 1],
-                                }}
-                              />
-                            )}
-                          </motion.div>
-                        </Link>
+                            {inner}
+                          </a>
+                        ) : (
+                          <Link
+                            to={item.href}
+                            onClick={() => setOpen(false)}
+                            className="relative block"
+                          >
+                            {inner}
+                          </Link>
+                        )}
                       </motion.li>
                     );
                   })}
@@ -764,7 +797,7 @@ export default function Navbar() {
             animate={{ y: 0 }}
             exit={{ y: 80 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed inset-x-0 bottom-0 z-[55] lg:hidden"
+            className="fixed inset-x-0 bottom-0 z-[55] xl:hidden"
           >
             <Link
               to={primaryCta.href}
