@@ -86,8 +86,10 @@ export default function HeroSection() {
         {/* Mobile-only scrim — on phones the layout flips to "photo on top,
             text on the bottom": Ron's face/upper body stays bright in the clear
             top half while a strong bottom gradient grounds the headline + CTAs,
-            keeping text entirely off his face. */}
-        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_bottom,transparent_0%,rgba(5,5,5,0.04)_30%,rgba(5,5,5,0.42)_50%,rgba(5,5,5,0.88)_72%,#050505_100%)]" />
+            keeping text off his face/teeth. The dark ramps up early (by ~45%)
+            because the bottom-anchored text block is tall and its top line
+            otherwise lands across his face. */}
+        <div className="absolute inset-0 md:hidden bg-[linear-gradient(to_bottom,transparent_0%,rgba(5,5,5,0.12)_24%,rgba(5,5,5,0.55)_44%,rgba(5,5,5,0.9)_62%,#050505_82%)]" />
 
         {/* Bottom fade into next section */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />

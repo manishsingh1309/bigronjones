@@ -145,8 +145,13 @@ body {
   }
 }
 @media (max-width: 768px) {
+  /* Phones: lift Ron's face into the clear top zone by cropping the empty gym
+     headroom above his head (zoom + anchor to the image bottom). With the
+     strong bottom scrim carrying the headline, the text never crosses his
+     face/teeth. */
   .hero-home {
-    background-position: 66% center;
+    background-size: auto 118%;
+    background-position: 64% bottom;
   }
 }
 
