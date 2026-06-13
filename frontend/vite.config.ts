@@ -97,7 +97,21 @@ export default defineConfig({
     port: 3000,
     host: true,
     // Required when Render runs `vite preview` (Node web service start command).
-    allowedHosts: [".onrender.com"],
+    // Must include every public host the preview server answers on: the Render
+    // *.onrender.com URL AND the custom domain (apex + www) — otherwise Vite 6
+    // returns "Blocked request. This host is not allowed."
+    allowedHosts: [".onrender.com", "bigronjones.com", "www.bigronjones.com"],
+    // `vite preview` does NOT reuse `server.proxy`. The SPA calls the API with
+    // relative paths (fetch("/api/...")), so without this they'd hit the preview
+    // server and fall back to index.html (HTML where JSON is expected — login,
+    // blog, trial, dashboard, checkout all break). Proxy /api to the backend.
+    proxy: {
+      "/api": {
+        target: "https://bigronjones.onrender.com",
+        changeOrigin: true,
+        secure: true,
+      },
+    },
   },
   build: {
     outDir: "dist",
