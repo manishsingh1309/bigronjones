@@ -95,6 +95,9 @@ export default defineConfig({
   },
   preview: {
     port: 3000,
+    host: true,
+    // Required when Render runs `vite preview` (Node web service start command).
+    allowedHosts: [".onrender.com"],
   },
   build: {
     outDir: "../dist",
