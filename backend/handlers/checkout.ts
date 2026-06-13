@@ -19,12 +19,35 @@ type CheckoutBody = {
   total?: number;
   successUrl?: string;
   cancelUrl?: string;
+  origin?: string;
   checkoutType?: "trial" | "phase2" | "shop";
   plan?: "full" | "six" | "thirtySix";
   programType?: "mens" | "womens";
   email?: string;
   name?: string;
 };
+
+// The user-facing origin for Stripe success/cancel redirects MUST be the site
+// the buyer is actually on — never localhost. Validate any supplied origin
+// against an allowlist so it can't be abused as an open redirect.
+function allowedRedirectOrigin(u: string | null | undefined): string | null {
+  if (!u) return null;
+  try {
+    const url = new URL(u);
+    const h = url.hostname;
+    if (
+      h === "bigronjones.com" ||
+      h === "www.bigronjones.com" ||
+      h === "localhost" ||
+      h === "127.0.0.1"
+    ) {
+      return `${url.protocol}//${url.host}`;
+    }
+  } catch {
+    /* not a parseable URL — ignore */
+  }
+  return null;
+}
 
 const stripe = process.env.STRIPE_SECRET_KEY
   ? require("stripe")(process.env.STRIPE_SECRET_KEY)
@@ -228,12 +251,16 @@ export default async function handler(req: Request): Promise<Response> {
   // bounce the user to bigronjones.com after a localhost test purchase.
   // VITE_SITE_URL is the user-facing app origin (localhost in dev,
   // production domain in prod). Prefer it.
-  const isProduction = process.env.NODE_ENV === "production";
-  const baseUrl = isProduction
-    ? process.env.VITE_SITE_URL ||
-      process.env.SITE_URL ||
-      "http://localhost:3000"
-    : process.env.VITE_SITE_URL || "http://localhost:3000";
+  // Prefer the SPA-supplied origin / request Origin header (the site the buyer
+  // is genuinely on), then trusted env, and finally the canonical production
+  // domain. This is what stops real users from being bounced to localhost after
+  // paying when the backend's SITE_URL env vars aren't set.
+  const baseUrl =
+    allowedRedirectOrigin(body.origin) ||
+    allowedRedirectOrigin(req.headers.get("origin")) ||
+    allowedRedirectOrigin(process.env.VITE_SITE_URL) ||
+    allowedRedirectOrigin(process.env.SITE_URL) ||
+    "https://www.bigronjones.com";
 
   // Shop purchases: each cart item is its own Stripe line at its real price.
   // Trial/phase2 purchases: a single synthesized line at the fixed plan price.

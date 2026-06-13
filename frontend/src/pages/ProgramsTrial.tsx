@@ -208,6 +208,9 @@ export default function ProgramsTrial() {
         body: JSON.stringify({
           checkoutType: "trial",
           programType: program,
+          // The origin the buyer is actually on, so Stripe redirects back here
+          // (production domain in prod, localhost in dev) — never a hardcoded host.
+          origin: window.location.origin,
           email: email.trim(),
           name: name.trim() || undefined,
           items: [
