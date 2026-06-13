@@ -1,7 +1,32 @@
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
+
+const viteRoot = __dirname;
+
+/** Admin and shared code live outside Vite root; resolve npm deps from here. */
+function resolveExternalWorkspaceDeps(): Plugin {
+  const rootPrefix = path.normalize(`${viteRoot}${path.sep}`);
+
+  return {
+    name: "resolve-external-workspace-deps",
+    enforce: "pre",
+    async resolveId(id, importer, options) {
+      if (!importer) return null;
+      if (id.startsWith(".") || id.startsWith("\0") || path.isAbsolute(id)) {
+        return null;
+      }
+
+      if (path.normalize(importer).includes(rootPrefix)) return null;
+
+      return this.resolve(id, path.join(viteRoot, "package.json"), {
+        ...options,
+        skipSelf: true,
+      });
+    },
+  };
+}
 
 // Project layout (relative to this file):
 //   ./src                  — frontend source
@@ -23,7 +48,7 @@ export default defineConfig({
   root: __dirname,
   // .env files live at the repo root, alongside package.json — not inside frontend/.
   envDir: path.resolve(__dirname, ".."),
-  plugins: [react(), tailwindcss()],
+  plugins: [resolveExternalWorkspaceDeps(), react(), tailwindcss()],
   resolve: {
     alias: [
       {

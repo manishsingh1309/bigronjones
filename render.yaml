@@ -34,7 +34,7 @@ services:
     runtime: static
     branch: main
     rootDir: .
-    buildCommand: npm install && npm run build
+    buildCommand: npm ci --ignore-scripts && npm run build
     staticPublishPath: ./dist
     routes:
       - type: rewrite
