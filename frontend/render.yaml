@@ -39,7 +39,7 @@ services:
     routes:
       - type: rewrite
         source: /api/*
-        destination: https://bigronjones-1.onrender.com/api/*
+        destination: https://bigronjones-8j39.onrender.com/api/*
       - type: rewrite
         source: /*
         destination: /index.html
@@ -155,7 +155,7 @@ services:
     # known, replace REPLACE-ME-RENDER-URL below with it.
     startCommand: |
       curl --fail --silent --show-error \
-        "https://bigronjones-1.onrender.com/api/cron/email-scheduler?secret=$CRON_SECRET"
+        "https://bigronjones-8j39.onrender.com/api/cron/email-scheduler?secret=$CRON_SECRET"
     envVars:
       # Same value as the web service's CRON_SECRET — must match.
       - key: CRON_SECRET
@@ -180,7 +180,7 @@ services:
     # REPLACE-ME-RENDER-URL below with it.
     startCommand: |
       curl --fail --silent --show-error --max-time 280 \
-        "https://bigronjones-1.onrender.com/api/generate-blogs?secret=$CRON_SECRET"
+        "https://bigronjones-8j39.onrender.com/api/generate-blogs?secret=$CRON_SECRET"
     envVars:
       # Same value as the web service's CRON_SECRET — must match.
       - key: CRON_SECRET

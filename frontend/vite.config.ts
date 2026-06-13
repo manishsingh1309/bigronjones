@@ -107,7 +107,7 @@ export default defineConfig({
     // blog, trial, dashboard, checkout all break). Proxy /api to the backend.
     proxy: {
       "/api": {
-        target: "https://bigronjones.onrender.com",
+        target: "https://bigronjones-8j39.onrender.com",
         changeOrigin: true,
         secure: true,
       },
