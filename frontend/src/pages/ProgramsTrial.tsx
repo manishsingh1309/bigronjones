@@ -215,11 +215,11 @@ export default function ProgramsTrial() {
               id: `trial-${program}`,
               slug: `trial-${program}`,
               name: `7-Day Oversight Trial — ${program === "mens" ? "Men's" : "Women's"}`,
-              price: 149,
+              price: 2,
               quantity: 1,
             },
           ],
-          total: 149,
+          total: 2,
         }),
       });
       const json = await res.json().catch(() => ({}));
@@ -325,10 +325,10 @@ export default function ProgramsTrial() {
               One-Time Payment
             </span>
             <span className="font-['Bebas_Neue'] text-[80px] leading-none text-white sm:text-[112px]">
-              $149
+              $2
             </span>
             <CrimsonButton size="lg" onClick={scrollToEnroll}>
-              START YOUR TRIAL — $149
+              START YOUR TRIAL — $2
             </CrimsonButton>
           </div>
         </div>
@@ -509,7 +509,7 @@ export default function ProgramsTrial() {
               </span>
               <div className="mt-2 flex items-baseline gap-2">
                 <span className="font-['Bebas_Neue'] text-6xl sm:text-7xl leading-none">
-                  $149
+                  $2
                 </span>
                 <span className="font-['DM_Mono'] text-[11px] uppercase tracking-[0.18em] text-white/40">
                   one-time
@@ -613,7 +613,7 @@ export default function ProgramsTrial() {
                     {submitting
                       ? "Opening Stripe..."
                       : program
-                        ? "ENROLL NOW — $149"
+                        ? "ENROLL NOW — $2"
                         : "Pick a track to continue"}
                   </CrimsonButton>
 

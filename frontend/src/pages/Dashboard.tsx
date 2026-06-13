@@ -351,8 +351,8 @@ export default function Dashboard() {
           icon={ShoppingBag}
           eyebrow="No Active Trial"
           title="START YOUR 7-DAY TRIAL."
-          body="You don't have an active trial yet. Enroll for $149 to get your 1:1 discovery call and unlock the dashboard."
-          ctaLabel="Enroll for $149"
+          body="You don't have an active trial yet. Enroll for $2 to get your 1:1 discovery call and unlock the dashboard."
+          ctaLabel="Enroll for $2"
           ctaHref="/programs/trial"
         />
       </Shell>

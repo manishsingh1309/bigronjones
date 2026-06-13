@@ -70,7 +70,8 @@ function checkoutLine(
         : "";
   return {
     name: `7-Day Oversight Trial${programLabel}`,
-    unitAmount: 14900,
+    // TEMP (live-payment test): trial priced at $2. Revert to 14900 ($149).
+    unitAmount: 200,
   };
 }
 
@@ -170,10 +171,11 @@ export default async function handler(req: Request): Promise<Response> {
   if (items.length === 0 && checkoutType === "trial") {
     items = [
       {
-        id: "trial-149",
+        id: "trial-test",
         slug: `trial-${body.programType || "general"}`,
         name: "7-Day Oversight Trial",
-        price: 149,
+        // TEMP (live-payment test): $2. Revert to 149 alongside unitAmount above.
+        price: 2,
         quantity: 1,
       },
     ];

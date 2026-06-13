@@ -146,7 +146,7 @@ export const getProgramAsCartItem = (slug: string) => {
     id: `program-${program.slug}`,
     slug: program.slug,
     name: program.title,
-    price: program.slug === "trial" ? 149 : 0, // priced programs route through /apply, not direct checkout
+    price: program.slug === "trial" ? 2 : 0, // TEMP (live-payment test): trial $2, revert to 149. Priced programs route through /apply.
     category: "program" as const,
     description: program.desc,
     fullDescription: program.fullDesc,

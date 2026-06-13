@@ -367,7 +367,7 @@ export default function Navbar() {
                           className="flex items-center gap-2 px-4 py-2.5 font-['DM_Mono'] text-[10px] uppercase tracking-[0.2em] text-[#E8192C] transition-colors hover:bg-[#111]"
                         >
                           <UserIcon size={12} />
-                          Start 7-Day Trial · $149
+                          Start 7-Day Trial · $2
                         </Link>
                       )}
                       <button
