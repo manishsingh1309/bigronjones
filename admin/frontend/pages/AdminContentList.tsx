@@ -29,9 +29,17 @@ export default function AdminContentList() {
   const [copied, setCopied] = useState<string | null>(null);
   const [pendingId, setPendingId] = useState<string | null>(null);
 
+  // Lead-magnet links are SHARED with real users, so they must point at the
+  // live site — never localhost (where the admin may be running). Use the
+  // configured production URL, ignore any localhost value, and fall back to
+  // the canonical domain.
+  const configuredSiteUrl = (
+    import.meta.env.VITE_SITE_URL as string | undefined
+  )?.replace(/\/$/, "");
   const siteUrl =
-    (import.meta.env.VITE_SITE_URL as string | undefined) ||
-    (typeof window !== "undefined" ? window.location.origin : "");
+    configuredSiteUrl && !/localhost|127\.0\.0\.1/.test(configuredSiteUrl)
+      ? configuredSiteUrl
+      : "https://bigronjones.com";
 
   async function load() {
     try {
