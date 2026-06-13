@@ -10,7 +10,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const root = resolve(__dirname, "..");
 
 const BASE = process.env.SITE_URL || "https://bigronjones.com";
-const OUT_DIR = resolve(root, "dist");
+// Output dir: defaults to <repo root>/dist. An optional CLI arg (resolved from
+// the current working dir) lets a build that runs from a subdirectory — e.g.
+// Render with Root Directory set to `frontend/` — write into its own dist.
+const OUT_DIR = process.argv[2]
+  ? resolve(process.cwd(), process.argv[2])
+  : resolve(root, "dist");
 
 function urlEntry(path, lastmod, freq, priority) {
   return `  <url>
