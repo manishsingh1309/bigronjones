@@ -33,9 +33,9 @@ services:
     name: bigronjones-frontend
     runtime: static
     branch: main
-    rootDir: .
+    rootDir: frontend
     buildCommand: npm ci --ignore-scripts && npm run build
-    staticPublishPath: ./dist
+    staticPublishPath: dist
     routes:
       - type: rewrite
         source: /api/*
