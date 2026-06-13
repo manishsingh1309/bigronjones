@@ -11,7 +11,7 @@
     "dev:frontend": "vite --config frontend/vite.config.ts",
     "dev:backend": "tsx backend/dev-server.ts",
     "start": "tsx backend/server.ts",
-    "build": "vite build --config frontend/vite.config.ts && node scripts/generate-sitemap.mjs",
+    "build": "vite build --config frontend/vite.config.ts && node scripts/generate-sitemap.mjs frontend/dist",
     "typecheck": "tsc --noEmit -p frontend/tsconfig.app.json",
     "preview": "vite preview --config frontend/vite.config.ts",
     "lint": "eslint ."

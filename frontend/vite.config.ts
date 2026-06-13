@@ -100,7 +100,7 @@ export default defineConfig({
     allowedHosts: [".onrender.com"],
   },
   build: {
-    outDir: "../dist",
+    outDir: "dist",
     emptyOutDir: true,
   },
 });
