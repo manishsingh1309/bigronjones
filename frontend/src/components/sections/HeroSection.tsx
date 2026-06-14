@@ -146,7 +146,7 @@ export default function HeroSection() {
                 <span
                   key={line.text}
                   className="block overflow-hidden"
-                  style={{ fontSize: "clamp(3.2rem, 10vw, 10.5rem)" }}
+                  style={{ fontSize: "clamp(2.5rem, 7.2vw, 7rem)" }}
                 >
                   <motion.span
                     className={`block ${colorClass}`}

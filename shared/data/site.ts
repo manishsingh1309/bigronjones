@@ -22,12 +22,12 @@ export const siteData = {
     tagline: "PRIVATE ONLINE COACHING",
     sub: "ADULTS 35+ • STRUCTURED TRAINING • WEEKLY ACCOUNTABILITY",
     lines: [
-      { text: "PRIVATE ONLINE", color: "white" as const },
-      { text: "COACHING FOR", color: "white" as const },
-      { text: "ADULTS 35+", color: "crimson" as const },
+      { text: "PRIVATE STRENGTH &", color: "white" as const },
+      { text: "WELLNESS OVERSIGHT", color: "white" as const },
+      { text: "FOR ADULTS 35+", color: "crimson" as const },
     ],
     description:
-      "Training, nutrition support, and weekly accountability built for men and women who are ready to stop guessing and follow a real plan.",
+      "Structured training, nutrition support, weekly Zoom coaching, and real accountability built around your life, schedule, and goals.",
     role: "Premium Strength & Wellness Coach",
     cta: "APPLY FOR COACHING",
     ctaSub: "Or start with 7 days free",
@@ -53,7 +53,7 @@ export const siteData = {
     {
       badge: "MEN'S COACHING",
       title: "Men's Fitness Alliance™",
-      tagline: "STRUCTURE. ACCOUNTABILITY. CUSTOM OVERSIGHT.",
+      tagline: "STRUCTURE, EXECUTION, ACCOUNTABILITY, CONSISTENCY",
       desc: [
         "Built for men 35+ who are ready for private coaching, weekly accountability, customized training, and nutrition support that fits real life.",
       ],
@@ -74,7 +74,7 @@ export const siteData = {
     {
       badge: "WOMEN'S COACHING",
       title: "Women's Wellness Program™",
-      tagline: "STRUCTURE. ACCOUNTABILITY. CUSTOM WELLNESS OVERSIGHT.",
+      tagline: "SUPPORT, CONFIDENCE, SUSTAINABILITY, WELLNESS OVERSIGHT",
       desc: [
         "Built for women 35+ who are ready for private coaching, customized training, nutrition support, and sustainable progress that fits real life.",
       ],
@@ -99,7 +99,7 @@ export const siteData = {
       title: "7-Day Oversight Trial",
       tagline: "START HERE IF YOU'RE NOT READY FOR FULL COACHING",
       desc: [
-        "Start with 7 days of structure, daily tracking, training direction, and two private 1:1 Zoom calls with BigRonJones®.",
+        "A 7-day private coaching experience built to give adults 35+ structure, training direction, daily tracking, and two 1:1 Zoom calls with BigRonJones®.",
       ],
       features: [
         "7 days of structured training direction",
