@@ -26,7 +26,6 @@ const navLinks = [
   { label: "7-DAY TRIAL", href: "/programs/trial" },
   { label: "CONSULT", href: "/consult" },
   { label: "BLOG", href: "/blog" },
-  { label: "PODCAST", href: "https://podcast.bigronjones.com" },
 ];
 
 export default function Navbar() {
@@ -185,9 +184,9 @@ export default function Navbar() {
                   )}
                 </>
               );
-              // External targets (e.g. the Podcast subdomain) must use a real
-              // anchor — react-router's <Link> would treat the absolute URL as
-              // an in-app path and dump the user on the 404 page.
+              // Any external nav target (absolute https URL) must use a real
+              // anchor — react-router's <Link> would treat it as an in-app
+              // path and dump the user on the 404 page.
               return external ? (
                 <a
                   key={item.href}

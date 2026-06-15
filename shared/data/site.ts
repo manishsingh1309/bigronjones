@@ -16,7 +16,6 @@ export const siteData = {
     { label: "WOMEN'S COACHING", href: "/programs/womens" },
     { label: "7-DAY TRIAL", href: "/programs/trial" },
     { label: "CONSULT", href: "/consult" },
-    { label: "PODCAST", href: "https://podcast.bigronjones.com" },
   ],
   hero: {
     tagline: "PRIVATE ONLINE COACHING",
