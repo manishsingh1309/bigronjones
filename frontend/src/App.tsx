@@ -17,6 +17,7 @@ import Privacy from "./pages/Privacy";
 import Programs from "./pages/Programs";
 import ProgramDetail from "./pages/ProgramDetail";
 import ProgramsTrial from "./pages/ProgramsTrial";
+import MensFitnessAlliance from "./pages/MensFitnessAlliance";
 import TrialSuccess from "./pages/TrialSuccess";
 import Refund from "./pages/Refund";
 import ShippingPolicy from "./pages/ShippingPolicy";
@@ -116,6 +117,9 @@ export default function App() {
           {/* Trial sales page must be matched before /:slug to avoid the
               dynamic route swallowing it. */}
           <Route path="/programs/trial" element={<ProgramsTrial />} />
+          {/* Men's gets a dedicated premium "Private Strength & Wellness
+              Oversight" page (matched before the dynamic :slug route). */}
+          <Route path="/programs/mens" element={<MensFitnessAlliance />} />
           <Route path="/programs/:slug" element={<ProgramDetail />} />
           <Route path="/trial/success" element={<TrialSuccess />} />
           <Route
