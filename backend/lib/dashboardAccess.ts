@@ -25,7 +25,11 @@ export function getDashboardAccess(appUser: AppUser): DashboardAccess {
   const paymentStatus = appUser.payment_status || null;
   const hasTrialStart = !!appUser.trial_start_date;
   const bookingCompleted = !!appUser.has_booked_calendly && hasTrialStart;
-  const effectivePaid = paymentStatus === "paid" || hasTrialStart;
+  // Admins / super-admins always get into the 7-day trial dashboard — for
+  // oversight and testing — even without a trial purchase of their own.
+  const isStaff =
+    appUser.role === "admin" || appUser.role === "super_admin";
+  const effectivePaid = paymentStatus === "paid" || hasTrialStart || isStaff;
 
   if (!effectivePaid) {
     return {
