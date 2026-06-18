@@ -664,10 +664,10 @@ export default function ProgramsTrial() {
             <span>
               Still have questions? Email{" "}
               <a
-                href="mailto:hello@bigronjones.com"
+                href="mailto:BigRonJonesLLC@gmail.com"
                 className="text-white underline underline-offset-4"
               >
-                hello@bigronjones.com
+                BigRonJonesLLC@gmail.com
               </a>
             </span>
           </div>

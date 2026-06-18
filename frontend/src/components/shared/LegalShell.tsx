@@ -46,10 +46,10 @@ export default function LegalShell({
           <p className="font-['DM_Mono'] text-[10px] uppercase tracking-[0.22em] text-white/40">
             Questions? Email{" "}
             <a
-              href="mailto:hello@bigronjones.com"
+              href="mailto:BigRonJonesLLC@gmail.com"
               className="text-[#E8192C] hover:text-white"
             >
-              hello@bigronjones.com
+              BigRonJonesLLC@gmail.com
             </a>
           </p>
         </div>

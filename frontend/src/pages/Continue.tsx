@@ -293,9 +293,9 @@ export default function ContinuePage() {
               Email{" "}
               <a
                 className="text-white underline"
-                href="mailto:hello@bigronjones.com"
+                href="mailto:BigRonJonesLLC@gmail.com"
               >
-                hello@bigronjones.com
+                BigRonJonesLLC@gmail.com
               </a>{" "}
               and we'll find a path.
             </p>
@@ -415,7 +415,7 @@ export default function ContinuePage() {
             {[
               { Icon: TrendingUp, label: "Programming adjusted weekly to your data" },
               { Icon: Sparkles, label: "Direct access to Ron, Sean, Dr. Shelia" },
-              { Icon: Mail, label: "hello@bigronjones.com — questions welcome" },
+              { Icon: Mail, label: "BigRonJonesLLC@gmail.com — questions welcome" },
             ].map(({ Icon, label }) => (
               <div key={label} className="flex items-center gap-3">
                 <Icon size={18} className="text-[#E8192C]" />

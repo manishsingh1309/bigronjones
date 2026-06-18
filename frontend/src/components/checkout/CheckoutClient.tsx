@@ -188,7 +188,7 @@ export default function CheckoutClient() {
         description:
           err instanceof Error
             ? err.message
-            : "Please try again — or email hello@bigronjones.com.",
+            : "Please try again — or email BigRonJonesLLC@gmail.com.",
         variant: "error",
       });
     } finally {

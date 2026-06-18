@@ -3,7 +3,7 @@ export const siteData = {
   url: "https://bigronjones.com",
   legalName: "Big Ron Jones LLC",
   contact: {
-    email: "hello@bigronjones.com",
+    email: "BigRonJonesLLC@gmail.com",
     supportEmail: "support@bigronjones.com",
     pressEmail: "press@bigronjones.com",
     // Replace with the real business address if/when it should be public.
