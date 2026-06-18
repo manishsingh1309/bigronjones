@@ -107,7 +107,12 @@ export default defineConfig({
     // blog, trial, dashboard, checkout all break). Proxy /api to the backend.
     proxy: {
       "/api": {
-        target: "https://bigronjones-8j39.onrender.com",
+        // Backend origin. Override with the API_PROXY_TARGET env var on the
+        // frontend service so a backend redeploy (new *.onrender.com URL) needs
+        // no code change — falls back to the current backend.
+        target:
+          process.env.API_PROXY_TARGET ||
+          "https://bigronjones-2ah1.onrender.com",
         changeOrigin: true,
         secure: true,
       },
