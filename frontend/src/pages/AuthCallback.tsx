@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "@/auth/supabase";
+import AuthBrand from "@/components/auth/AuthBrand";
 
 export default function AuthCallback() {
   const navigate = useNavigate();
@@ -46,11 +47,15 @@ export default function AuthCallback() {
   }, [navigate, params]);
 
   return (
-    <div className="min-h-screen bg-[#050505] flex items-center justify-center">
+    <div className="min-h-screen bg-[#050505] flex flex-col items-center justify-center px-6">
+      <AuthBrand asLink={false} className="mb-10" />
       <div className="text-center">
         <div className="w-10 h-10 border-2 border-[#E8192C] border-t-transparent rounded-full animate-spin mx-auto mb-5" />
         <p className="font-['DM_Mono'] text-[11px] tracking-[0.3em] text-white/40 uppercase">
-          Authenticating...
+          Signing you in…
+        </p>
+        <p className="mt-3 font-['DM_Sans'] text-xs text-white/30">
+          Securely connecting your BigRonJones® account
         </p>
       </div>
     </div>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Eye, EyeOff, Check, AlertCircle, Lock } from "lucide-react";
+import { Eye, EyeOff, Check, AlertCircle, Lock, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import AuthBrand from "@/components/auth/AuthBrand";
 
 function getStrength(pw: string) {
   const checks = {
@@ -162,13 +163,7 @@ export default function SignUp() {
         <div className="absolute top-0 left-0 right-0 h-[3px] bg-[#E8192C]" />
 
         <div className="relative z-10 flex flex-col justify-between h-full p-12">
-          <Link
-            to="/"
-            className="font-['Bebas_Neue'] text-[20px] tracking-[0.2em] text-white hover:text-white/80 transition-colors"
-          >
-            BIGRONJONES
-            <sup style={{ fontSize: "0.42em", verticalAlign: "super", lineHeight: 0 }}>®</sup>
-          </Link>
+          <AuthBrand />
 
           <div>
             <div className="w-10 h-[2px] bg-[#E8192C] mb-6" />
@@ -207,13 +202,7 @@ export default function SignUp() {
       </div>
 
       <div className="flex-1 flex flex-col justify-center px-6 py-16 lg:px-14 xl:px-20 overflow-y-auto">
-        <Link
-          to="/"
-          className="font-['Bebas_Neue'] text-[20px] tracking-[0.2em] text-white mb-10 lg:hidden block"
-        >
-          BIGRONJONES
-          <sup style={{ fontSize: "0.42em", verticalAlign: "super", lineHeight: 0 }}>®</sup>
-        </Link>
+        <AuthBrand className="mb-10 lg:hidden" />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -237,7 +226,7 @@ export default function SignUp() {
           <motion.button
             onClick={handleGoogle}
             disabled={googleLoading || status === "submitting"}
-            className="w-full flex items-center justify-center gap-3 py-4 bg-white text-[#050505] font-['DM_Sans'] font-semibold text-sm hover:bg-white/90 transition-all duration-200 disabled:opacity-60 mb-5"
+            className="w-full flex items-center justify-center gap-3 py-4 bg-white text-[#050505] font-['DM_Sans'] font-semibold text-sm hover:bg-white/90 transition-all duration-200 disabled:opacity-60 mb-3"
             whileHover={{ scale: 1.01 }}
             whileTap={{ scale: 0.99 }}
             type="button"
@@ -249,6 +238,11 @@ export default function SignUp() {
             )}
             {googleLoading ? "Connecting to Google..." : "Continue with Google"}
           </motion.button>
+
+          <p className="mb-5 flex flex-wrap items-center justify-center gap-1.5 text-center font-['DM_Sans'] text-[11px] text-white/40">
+            <ShieldCheck size={12} className="text-[#E8192C]/70" />
+            Secure sign-up — we never see your password
+          </p>
 
           <div className="flex items-center gap-4 mb-5">
             <div className="flex-1 h-[1px] bg-[#1c1c1c]" />
@@ -476,11 +470,11 @@ export default function SignUp() {
               )}
             </motion.button>
 
-            <div className="flex items-center justify-center gap-2 pt-1">
-              <Lock size={10} className="text-white/20" />
-              <p className="font-['DM_Mono'] text-[9px] tracking-[0.2em] text-white/20 uppercase">
-                Secured by Supabase. We never store your password.
-              </p>
+            <div className="flex flex-wrap items-center justify-center gap-1.5 pt-1 text-center">
+              <Lock size={10} className="shrink-0 text-white/20" />
+              <span className="font-['DM_Mono'] text-[9px] tracking-[0.2em] text-white/20 uppercase">
+                256-bit encrypted · password never stored
+              </span>
             </div>
           </form>
 
@@ -493,6 +487,27 @@ export default function SignUp() {
               Sign in
             </Link>
           </p>
+
+          <div className="mt-8 border-t border-[#141414] pt-5 text-center">
+            <p className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.2em] text-white/25">
+              Private coaching platform · BigRonJones® LLC
+            </p>
+            <div className="mt-2 flex items-center justify-center gap-4">
+              <Link
+                to="/privacy"
+                className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.15em] text-white/35 transition-colors hover:text-[#E8192C]"
+              >
+                Privacy
+              </Link>
+              <span className="text-white/15">·</span>
+              <Link
+                to="/terms"
+                className="font-['DM_Mono'] text-[9px] uppercase tracking-[0.15em] text-white/35 transition-colors hover:text-[#E8192C]"
+              >
+                Terms
+              </Link>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>
