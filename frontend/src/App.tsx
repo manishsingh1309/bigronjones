@@ -134,6 +134,14 @@ export default function App() {
           <Route path="/shipping-policy" element={<ShippingPolicy />} />
           <Route path="/shop" element={<Shop />} />
           <Route path="/shop/:slug" element={<ProductDetail />} />
+          {/* Shopify product for the 7-Day Trial (synced to the Instagram /
+              Facebook Shop) lives at /products/7-day-trial. The SPA owns
+              routing, so without this the URL hits the 404 page. Redirect it
+              to the on-site trial purchase page. */}
+          <Route
+            path="/products/7-day-trial"
+            element={<Navigate to="/programs/trial" replace />}
+          />
           <Route path="/team" element={<Team />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/testimonials" element={<Testimonials />} />
