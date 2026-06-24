@@ -30,106 +30,141 @@ type Day = {
   lessonVideoId: string;
 };
 
-const PROGRAM: Day[] = [
-  {
-    day: 1,
-    title: "Day 1 — Welcome & The Real-World System",
-    focus: "Foundations · Mindset",
-    description:
-      "Ron lays out the structure of the trial, what to expect each day, and the mental model that makes the next six days actually stick.",
-    keyPoints: [
-      "Watch today's lesson video in full",
-      "Open Day 1 of the Gym or Home workout playlist",
-      "Rate your six daily metrics to complete the day",
-      "Leave a note for Ron at the bottom — he reads it directly",
-    ],
-    lessonVideoId: "90-COQ3d0mQ",
-  },
-  {
-    day: 2,
-    title: "Day 2 — Cardio That Works For Real Adults",
-    focus: "Aerobic Base · Conditioning",
-    description:
-      "Cardio isn't punishment. Ron breaks down how to dose cardio so it builds you up instead of breaking you down.",
-    keyPoints: [
-      "Watch the Day 2 lesson",
-      "Run today's workout from the Gym or Home playlist",
-      "Rate your six daily metrics",
-      "Drop your honest note — what landed, what didn't",
-    ],
-    lessonVideoId: "KGiKfgMHgiM",
-  },
-  {
-    day: 3,
-    title: "Day 3 — Strength That Sticks",
-    focus: "Strength · Movement Quality",
-    description:
-      "How to add load without wrecking joints. Quality before weight, every set.",
-    keyPoints: [
-      "Lesson video",
-      "Today's strength session from the workout playlist",
-      "Rate your six daily metrics",
-      "Note for Ron",
-    ],
-    lessonVideoId: "KwoI0SgTJzY",
-  },
-  {
-    day: 4,
-    title: "Day 4 — Recovery & Sleep",
-    focus: "Recovery · Sleep",
-    description:
-      "The day that makes the other days work. Active recovery, breathwork, and the sleep protocol Ron uses with his oversight clients.",
-    keyPoints: [
-      "Watch today's recovery lesson",
-      "Mobility flow from the playlist",
-      "Rate your six daily metrics (be honest about sleep)",
-      "Note for Ron",
-    ],
-    lessonVideoId: "fGZx__eem7I",
-  },
-  {
-    day: 5,
-    title: "Day 5 — Nutrition Basics",
-    focus: "Nutrition · Fuel",
-    description:
-      "Practical nutrition that survives the real world — no perfect meal plans, just the levers that move the needle.",
-    keyPoints: [
-      "Lesson video",
-      "Today's workout session",
-      "Rate your six daily metrics",
-      "Note for Ron",
-    ],
-    lessonVideoId: "1NJgQ5Hz2Yk",
-  },
-  {
-    day: 6,
-    title: "Day 6 — Conditioning & Capacity",
-    focus: "Conditioning · Work Capacity",
-    description:
-      "Build the engine between easy cardio and all-out. The gear most adults are missing.",
-    keyPoints: [
-      "Lesson video",
-      "Conditioning workout from the playlist",
-      "Rate your six daily metrics",
-      "Drop your note",
-    ],
-    lessonVideoId: "M-hR9CDcQng",
-  },
-  {
-    day: 7,
-    title: "Day 7 — Review & The Path Forward",
-    focus: "Review · Continuation",
-    description:
-      "Final lesson. Bring your metrics and notes to the Day 7 review call — Ron uses them to plan what comes next.",
-    keyPoints: [
-      "Watch the final lesson",
-      "Light movement from the playlist",
-      "Submit your final daily metrics",
-      "Show up to your Day 7 review call",
-    ],
-    lessonVideoId: "yTAPv6f8FfU",
-  },
-];
+type ProgramType = "mens" | "womens";
+
+// The 7-day curriculum is program-specific: men's and women's trials run the
+// same day-by-day arc (Welcome → Cardio → Midweek Uplift → Strength → Recovery
+// → Sleep → Review) but with their own lesson videos. The buyer's purchased
+// program (users.program_type, surfaced via /api/me → trial.programType)
+// selects which set of videos plays. Day 7 is the review call — no lesson clip.
+//
+// Lesson clips are unlisted YouTube Shorts (vertical), embedded 9:16.
+function buildProgram(videoIds: [string, string, string, string, string, string]): Day[] {
+  return [
+    {
+      day: 1,
+      title: "Day 1 — Welcome & Orientation",
+      focus: "Foundations · Mindset",
+      description:
+        "Ron lays out how the next seven days work, what to expect, and the simple mindset that makes it actually stick. Start here.",
+      keyPoints: [
+        "Watch today's welcome video in full",
+        "Open Day 1 of the Gym or Home workout playlist",
+        "Rate your six daily metrics to complete the day",
+        "Leave a note for Ron — he reads it directly",
+      ],
+      lessonVideoId: videoIds[0],
+    },
+    {
+      day: 2,
+      title: "Day 2 — Cardio Doctrine",
+      focus: "Aerobic Base · Conditioning",
+      description:
+        "Cardio that builds you up instead of breaking you down. Ron's dosing for real adults with real schedules.",
+      keyPoints: [
+        "Watch the Day 2 lesson",
+        "Run today's session from the Gym or Home playlist",
+        "Rate your six daily metrics",
+        "Drop your honest note — what landed, what didn't",
+      ],
+      lessonVideoId: videoIds[1],
+    },
+    {
+      day: 3,
+      title: "Day 3 — Midweek Uplift",
+      focus: "Momentum · Mindset",
+      description:
+        "Midweek is where most people fall off. A short reset to keep your momentum — and your head — in the game.",
+      keyPoints: [
+        "Watch today's lesson",
+        "Run today's session from the playlist",
+        "Rate your six daily metrics",
+        "Note for Ron",
+      ],
+      lessonVideoId: videoIds[2],
+    },
+    {
+      day: 4,
+      title: "Day 4 — Strength Doctrine",
+      focus: "Strength · Movement Quality",
+      description:
+        "Add strength without wrecking your joints. Quality before load, every set.",
+      keyPoints: [
+        "Watch today's strength lesson",
+        "Today's strength session from the workout playlist",
+        "Rate your six daily metrics",
+        "Note for Ron",
+      ],
+      lessonVideoId: videoIds[3],
+    },
+    {
+      day: 5,
+      title: "Day 5 — Recovery Doctrine",
+      focus: "Recovery · Mobility",
+      description:
+        "The day that makes the other days work. Active recovery and mobility that keep you moving, not aching.",
+      keyPoints: [
+        "Watch today's recovery lesson",
+        "Mobility flow from the playlist",
+        "Rate your six daily metrics",
+        "Note for Ron",
+      ],
+      lessonVideoId: videoIds[4],
+    },
+    {
+      day: 6,
+      title: "Day 6 — Sleep Quality",
+      focus: "Sleep · Stress",
+      description:
+        "Sleep is the cheapest performance upgrade you're ignoring. Ron's protocol to fix it.",
+      keyPoints: [
+        "Watch today's lesson",
+        "Light movement from the playlist",
+        "Rate your six daily metrics (be honest about sleep)",
+        "Drop your note",
+      ],
+      lessonVideoId: videoIds[5],
+    },
+    {
+      day: 7,
+      title: "Day 7 — Review & The Path Forward",
+      focus: "Review · Continuation",
+      description:
+        "Bring your metrics and notes to your Day 7 review with Ron. This is where you decide what comes next.",
+      keyPoints: [
+        "Submit your final daily metrics",
+        "Bring your notes to the Day 7 review call",
+        "Decide your next step with Ron",
+      ],
+      // No lesson clip on the review day.
+      lessonVideoId: "",
+    },
+  ];
+}
+
+// Day 1–6 lesson Shorts per program (Day 7 is the review call).
+const PROGRAMS: Record<ProgramType, Day[]> = {
+  mens: buildProgram([
+    "cNN7olfQLAw", // Day 1 — 7 Day Welcome Orientation For Men
+    "CRyCyE3j2YE", // Day 2 — Cardio Doctrine Men
+    "H5O3tdvs6Ws", // Day 3 — 7 Day Trial Midweek Uplift
+    "EtajCk1WiF4", // Day 4 — Strength Doctrine
+    "XSuJSUmkxqA", // Day 5 — Recovery Doctrine Men
+    "imouMuOvvbk", // Day 6 — Sleep Quality Reel
+  ]),
+  womens: buildProgram([
+    "jJcl3FuFN6k", // Day 1 — 7 Day Welcome Orientation For Women
+    "vcHn6NaTOQw", // Day 2 — Cardio Doctrine Women
+    "ylheitlOK0k", // Day 3 — 7 Day Trial Midweek Uplift
+    "eRRqWE-6RP4", // Day 4 — Strength training
+    "YLCCbtjefQM", // Day 5 — Recovery Doctrine Women
+    "imouMuOvvbk", // Day 6 — Sleep Quality Reel
+  ]),
+};
+
+function resolveProgramType(programType: string | null): ProgramType {
+  return programType === "womens" ? "womens" : "mens";
+}
 
 const GYM_PLAYLIST_ID = "PLbxZT1M57opMuU9QVklq2OLKkC-CQzpgI";
 const HOME_PLAYLIST_ID = "PLbxZT1M57opO9ejTUnnhHo0wivaXUqSCq";
@@ -275,7 +310,10 @@ export default function TrialDashboard() {
   }, [completedDays]);
 
   const allComplete = completedDays.has(7);
-  const today = PROGRAM[currentDay - 1];
+  // Men's vs women's trial plays its own lesson videos. Falls back to men's
+  // until /api/me resolves the buyer's purchased program.
+  const program = PROGRAMS[resolveProgramType(trial.programType)];
+  const today = program[currentDay - 1];
   const watchedToday = watchedDays.has(currentDay);
   const checkedInToday = completedDays.has(currentDay);
   const percent = Math.round((completedCount / 7) * 100);
@@ -514,7 +552,7 @@ export default function TrialDashboard() {
             ))}
           {section === "modules" && (
             <ModuleLadder
-              program={PROGRAM}
+              program={program}
               currentDay={currentDay}
               completedDays={completedDays}
               onGoToDay={() => setSection("today")}
@@ -563,6 +601,10 @@ function TodaySection({
   submittingReview: boolean;
   existingReview: Review | null;
 }) {
+  // Day 7 (review) has no lesson clip — treat it as already "watched" so the
+  // check-in isn't gated on a video that doesn't exist.
+  const hasVideo = !!day.lessonVideoId;
+  const lessonDone = watched || !hasVideo;
   return (
     <div className="grid gap-6 lg:grid-cols-[1.45fr_1fr]">
       <div className="border border-[#1a1a1a] bg-[#0d0d0d] p-5 sm:p-6 md:p-8">
@@ -576,28 +618,42 @@ function TodaySection({
           {day.description}
         </p>
 
-        {/* Step 1 — Watch the lesson */}
+        {/* Step 1 — Watch the lesson (or the review-day note on Day 7) */}
         <div className="mt-6">
-          <StepLabel n={1} label="Watch the lesson" done={watched} />
-          <div className="mt-3">
-            <VideoPlayer videoId={day.lessonVideoId} title={day.title} />
-          </div>
-          {!watched && (
-            <button
-              type="button"
-              onClick={onMarkWatched}
-              className="mt-3 inline-flex w-full items-center justify-center gap-2 border border-[#E8192C]/50 bg-[#E8192C]/[0.08] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:border-[#E8192C] hover:bg-[#E8192C]/15 sm:w-auto"
-            >
-              <CheckCircle2 size={14} />
-              I&apos;ve watched today&apos;s lesson
-            </button>
+          <StepLabel
+            n={1}
+            label={hasVideo ? "Watch the lesson" : "Your review day"}
+            done={lessonDone}
+          />
+          {hasVideo ? (
+            <>
+              <div className="mt-3">
+                <VideoPlayer videoId={day.lessonVideoId} title={day.title} />
+              </div>
+              {!watched && (
+                <button
+                  type="button"
+                  onClick={onMarkWatched}
+                  className="mt-3 inline-flex w-full items-center justify-center gap-2 border border-[#E8192C]/50 bg-[#E8192C]/[0.08] px-5 py-3 font-['DM_Mono'] text-[11px] uppercase tracking-[0.2em] text-white transition-colors hover:border-[#E8192C] hover:bg-[#E8192C]/15 sm:w-auto"
+                >
+                  <CheckCircle2 size={14} />
+                  I&apos;ve watched today&apos;s lesson
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="mt-3 flex items-start gap-3 border border-[#E8192C]/30 bg-[#E8192C]/[0.06] px-4 py-5 text-[13px] leading-relaxed text-white/70">
+              <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#E8192C]" />
+              No lesson video today — this is your review day. Submit your final
+              metrics below and bring your notes to your Day 7 review with Ron.
+            </div>
           )}
         </div>
 
         {/* Step 2 — Daily metrics form (revealed once the lesson is watched) */}
         <div className="mt-8 border-t border-[#1a1a1a] pt-6">
           <StepLabel n={2} label="Rate your six daily metrics" done={checkedIn} />
-          {!watched ? (
+          {!lessonDone ? (
             <div className="mt-4 flex items-center gap-3 border border-dashed border-[#1a1a1a] bg-black/40 px-4 py-5 text-[13px] text-white/45">
               <Lock size={16} className="shrink-0 text-white/40" />
               Watch today&apos;s lesson above to open your daily check-in.
@@ -1201,10 +1257,13 @@ function TabButton({
   );
 }
 
+// Lesson clips are vertical YouTube Shorts, so the player is a 9:16 frame,
+// centred and width-capped so it reads like a phone on desktop while filling
+// the column on mobile (where most trial users watch).
 function VideoPlayer({ videoId, title }: { videoId: string; title: string }) {
   if (!videoId) {
     return (
-      <div className="flex aspect-video w-full flex-col items-center justify-center border border-dashed border-[#1a1a1a] bg-[radial-gradient(circle_at_30%_20%,rgba(232,25,44,0.18),rgba(0,0,0,0)_60%),#0a0a0a] text-center">
+      <div className="mx-auto flex aspect-[9/16] w-full max-w-[360px] flex-col items-center justify-center border border-dashed border-[#1a1a1a] bg-[radial-gradient(circle_at_30%_20%,rgba(232,25,44,0.18),rgba(0,0,0,0)_60%),#0a0a0a] text-center">
         <PlayCircle size={36} className="text-[#E8192C]/70" />
         <p className="mt-3 font-['DM_Mono'] text-[10px] uppercase tracking-[0.25em] text-white/55">
           Video uploading soon
@@ -1216,12 +1275,14 @@ function VideoPlayer({ videoId, title }: { videoId: string; title: string }) {
     );
   }
   return (
-    <iframe
-      title={title}
-      src={`https://www.youtube.com/embed/${videoId}`}
-      className="aspect-video h-full w-full border border-[#1a1a1a]"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowFullScreen
-    />
+    <div className="relative mx-auto aspect-[9/16] w-full max-w-[360px] overflow-hidden border border-[#1a1a1a] bg-black">
+      <iframe
+        title={title}
+        src={`https://www.youtube.com/embed/${videoId}?rel=0&playsinline=1`}
+        className="absolute inset-0 h-full w-full"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      />
+    </div>
   );
 }
