@@ -23,7 +23,7 @@ const stripePublishableKey = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY as
 const stripePromise = stripePublishableKey
   ? loadStripe(stripePublishableKey)
   : Promise.resolve(null);
-const TRIAL_CHECKOUT_PRICE = 2; // TEMP (live-payment test): revert to 149
+const TRIAL_CHECKOUT_PRICE = 149; // 7-Day Oversight Trial: $149 one-time (live)
 
 type LegacyRedirectStripe = {
   redirectToCheckout?: (options: {

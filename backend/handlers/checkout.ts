@@ -93,8 +93,8 @@ function checkoutLine(
         : "";
   return {
     name: `7-Day Oversight Trial${programLabel}`,
-    // TEMP (live-payment test): trial priced at $2. Revert to 14900 ($149).
-    unitAmount: 200,
+    // 7-Day Oversight Trial: $149 one-time (live). Server-authoritative charge.
+    unitAmount: 14900,
   };
 }
 
@@ -197,8 +197,9 @@ export default async function handler(req: Request): Promise<Response> {
         id: "trial-test",
         slug: `trial-${body.programType || "general"}`,
         name: "7-Day Oversight Trial",
-        // TEMP (live-payment test): $2. Revert to 149 alongside unitAmount above.
-        price: 2,
+        // $149 one-time — mirrors checkoutLine()'s unitAmount (14900) for the
+        // total guard, saved order, and metadata.
+        price: 149,
         quantity: 1,
       },
     ];
